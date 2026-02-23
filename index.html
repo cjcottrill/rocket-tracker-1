@@ -30,11 +30,10 @@
     // Chris, double-check that this key is exactly what's in your dashboard!
     const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05'; 
     
-    async function load() {
-        const card = document.getElementById('card');
-        try {
-            // Updated to v2.3.0 - The most stable current version
-            const url = `https://ll.thespacedevs.com`;
+async function load() {
+    const card = document.getElementById('card');
+    try {
+        const url = `
 
             const res = await fetch(url, {
                 method: 'GET',
