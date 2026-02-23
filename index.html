@@ -27,31 +27,54 @@
         </div>
     </div>
     <script>
-        const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05';
-        // Using a CORS proxy to bypass browser security blocks
-        const URL = `https://corsproxy.io`;
+    // YOUR API KEY
+    const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05'; 
+    const LOCATIONS = '12,27'; 
 
-        async function load() {
-            try {
-                const res = await fetch(URL, { headers: { 'Authorization': `Token ${API_KEY}` } });
-                const data = await res.json();
-                const l = data.results[0];
-                document.getElementById('name').innerText = l.name;
-                document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
-                document.getElementById('pad').innerText = l.pad.name;
-                startClock(l.net);
-            } catch (e) { document.getElementById('card').innerHTML = "<h2>Error connecting to Mission Control.</h2>"; }
+    async function load() {
+        try {
+            // Using a different robust proxy and the 2.2.0 stable endpoint
+            const url = `https://api.allorigins.win{encodeURIComponent(`https://ll.thespacedevs.com{LOCATIONS}`)}`;
+            
+            const res = await fetch(url);
+            const proxyData = await res.json();
+            
+            // allorigins wraps the data, so we parse it here
+            const data = JSON.parse(proxyData.contents);
+            
+            if (!data.results || data.results.length === 0) {
+                throw new Error("No launches found");
+            }
+
+            const l = data.results[0]; // Get the very next one
+            
+            document.getElementById('name').innerText = l.name;
+            document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
+            document.getElementById('pad').innerText = l.pad.name;
+            
+            startClock(l.net);
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('card').innerHTML = `<h2>Houston, we have a problem.</h2><p style="font-size:0.8rem; color:red;">${e.message}</p><p>Check if your Space Devs account is active.</p>`; 
         }
-        function startClock(t) {
-            const target = new Date(t).getTime();
-            setInterval(() => {
-                const diff = target - Date.now();
-                if (diff < 0) { document.getElementById('countdown').innerText = "LIFTOFF!"; return; }
-                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-                document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
-            }, 1000);
-        }
-        load();
-    </script>
+    }
+
+    function startClock(t) {
+        const target = new Date(t).getTime();
+        setInterval(() => {
+            const diff = target - Date.now();
+            if (diff < 0) { 
+                document.getElementById('countdown').innerText = "LIFTOFF!"; 
+                return; 
+            }
+            const d = Math.floor(diff/86400000);
+            const h = Math.floor((diff%86400000)/3600000);
+            const m = Math.floor((diff%3600000)/60000);
+            const s = Math.floor((diff%60000)/1000);
+            document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
+        }, 1000);
+    }
+    load();
+</script>
 </body>
 </html>
