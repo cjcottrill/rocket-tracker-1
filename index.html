@@ -26,100 +26,71 @@
             </div>
         </div>
     </div>
-   <script>
-    // Chris, double-check that this key is exactly what's in your dashboard!
-    const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05'; 
-    
-async function load() {
-    const card = document.getElementById('card');
-    try {
-        // Updated to v2.3.0 stable. We add &format=json to be extra clear.
-        const url = `https://ll.thespacedevs.com`;
-        
-        const res = await fetch(url, {
-            method: 'GET',
-            headers: { 
-                'Authorization': `Token ${API_KEY}`,
-                // We keep it broad to avoid the 406 error
-                'Accept': '*/*'
-            }
-        });
 
-        if (!res.ok) {
-            throw new Error(`Status ${res.status}`);
+    <script>
+        const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05'; 
+        
+        async function load() {
+            const card = document.getElementById('card');
+            try {
+                // Correct v2.3.0 path for KSC (12) and Cape Canaveral (27)
+                const url = `https://ll.thespacedevs.com`;
+                
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Token ${API_KEY}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!res.ok) throw new Error(`Status ${res.status}`);
+
+                const data = await res.json();
+                
+                // v2.3.0 returns an array in 'results'
+                if (!data.results || data.results.length === 0) {
+                    document.getElementById('name').innerText = "No upcoming launches found.";
+                    return;
+                }
+
+                const l = data.results[0]; 
+
+                // Update the UI
+                document.getElementById('name').innerText = l.name;
+                document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
+                document.getElementById('pad').innerText = l.pad.name;
+
+                startClock(l.net);
+            } catch (e) {
+                console.error("API Fetch Error:", e);
+                card.innerHTML = `<h2>Launch Data Offline</h2><p style="color:red;">Error: ${e.message}</p><p>Refreshing frequency...</p>`;
+            }
         }
 
-        const data = await res.json();
-        
-        // In v2.3.0, upcoming launches are inside 'results'
-        const l = data.results[0]; 
+        function startClock(targetTime) {
+            const target = new Date(targetTime).getTime();
+            const timer = document.getElementById('countdown');
+            
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target - now;
 
-        if (!l) {
-            document.getElementById('name').innerText = "No upcoming launches found.";
-            return;
+                if (diff < 0) {
+                    timer.innerText = "LIFTOFF!";
+                    return;
+                }
+
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                timer.innerText = `${d}d ${h}h ${m}m ${s}s`;
+            }, 1000);
         }
 
-        // Update the screen with the data
-        document.getElementById('name').innerText = l.name;
-        document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
-        document.getElementById('pad').innerText = l.pad.name;
-
-        startClock(l.net);
-    } catch (e) {
-        console.error("API Fetch Error:", e);
-        // If it fails again, let's see why
-        card.innerHTML = `<h2>Launch Data Offline</h2><p style="color:red;">Error: ${e.message}</p><p>Check your Space Devs account status.</p>`;
-    }
-}
-            });
-
-            if (!res.ok) {
-                // If it fails, this helps us see the exact error code (like 401 or 403)
-                throw new Error(`Error ${res.status}: ${res.statusText}`);
-            }
-
-            const data = await res.json();
-            const l = data.results[0]; // Grab the very first upcoming launch
-
-            if (!l) throw new Error("No upcoming launches found for the Cape.");
-
-            // Update the UI
-            document.getElementById('name').innerText = l.name;
-            document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
-            document.getElementById('pad').innerText = l.pad.name;
-
-            startClock(l.net);
-        } catch (e) {
-            console.error("Mission Control Error:", e);
-            card.innerHTML = `<h2>Connection Interrupted</h2>
-                             <p style="font-size:0.8rem; color:#ff4500;">Details: ${e.message}</p>
-                             <p>Try refreshing in 60 seconds.</p>`;
-        }
-    }
-
-    function startClock(targetTime) {
-        const target = new Date(targetTime).getTime();
-        const timer = document.getElementById('countdown');
-        
-        setInterval(() => {
-            const now = new Date().getTime();
-            const diff = target - now;
-
-            if (diff < 0) {
-                timer.innerText = "LIFTOFF!";
-                return;
-            }
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-            timer.innerText = `${d}d ${h}h ${m}m ${s}s`;
-        }, 1000);
-    }
-
-    load();
-</script>
+        load();
+    </script>
 </body>
 </html>
