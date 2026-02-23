@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris the Rocket Guy's Florida Launch Tracker</title>
+    <style>
+        :root { --bg: #0b0e14; --card: #1a1d23; --accent: #ff4500; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; text-align: center; }
+        header { padding: 2rem; border-bottom: 1px solid #333; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; }
+        .launch-card { background: var(--card); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; }
+        .timer { font-family: monospace; font-size: 2.5rem; color: var(--accent); margin: 20px 0; font-weight: bold; }
+        .details { text-align: left; border-top: 1px solid #333; padding-top: 15px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header><h1>Florida Launch Tracker</h1></header>
+    <div class="container">
+        <div class="launch-card" id="card">
+            <h2 id="name">Scanning pad...</h2>
+            <div class="timer" id="countdown">00:00:00:00</div>
+            <div class="details">
+                <p><strong>Vehicle:</strong> <span id="rocket">...</span></p>
+                <p><strong>Pad:</strong> <span id="pad">...</span></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05';
+        // Using a CORS proxy to bypass browser security blocks
+        const URL = `https://corsproxy.io`;
+
+        async function load() {
+            try {
+                const res = await fetch(URL, { headers: { 'Authorization': `Token ${API_KEY}` } });
+                const data = await res.json();
+                const l = data.results[0];
+                document.getElementById('name').innerText = l.name;
+                document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
+                document.getElementById('pad').innerText = l.pad.name;
+                startClock(l.net);
+            } catch (e) { document.getElementById('card').innerHTML = "<h2>Error connecting to Mission Control.</h2>"; }
+        }
+        function startClock(t) {
+            const target = new Date(t).getTime();
+            setInterval(() => {
+                const diff = target - Date.now();
+                if (diff < 0) { document.getElementById('countdown').innerText = "LIFTOFF!"; return; }
+                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+                document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
+            }, 1000);
+        }
+        load();
+    </script>
+</body>
+</html>
