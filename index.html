@@ -27,31 +27,34 @@
         </div>
     </div>
    <script>
+    // Chris, double-check that this key is exactly what's in your dashboard!
     const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05'; 
-    const LOCATIONS = '12,27'; // KSC and CCSFS
-
+    
     async function load() {
         const card = document.getElementById('card');
         try {
-            // Updated to v2.3.0 and using a fresh proxy link
-            const targetUrl = `https://ll.thespacedevs.com{LOCATIONS}`;
-            const proxyUrl = `https://api.allorigins.win{encodeURIComponent(targetUrl)}`;
+            // Updated to v2.3.0 - The most stable current version
+            const url = `https://ll.thespacedevs.com`;
 
-            const res = await fetch(proxyUrl);
-            const proxyData = await res.json();
-            
-            // Parse the actual data from the proxy wrapper
-            const data = JSON.parse(proxyData.contents);
+            const res = await fetch(url, {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Token ${API_KEY}`,
+                    'Accept': 'application/json'
+                }
+            });
 
-            // In v2.3.0, the first launch is results[0]
-            const l = data.results[0];
-
-            if (!l) {
-                document.getElementById('name').innerText = "No launches found.";
-                return;
+            if (!res.ok) {
+                // If it fails, this helps us see the exact error code (like 401 or 403)
+                throw new Error(`Error ${res.status}: ${res.statusText}`);
             }
 
-            // Update the UI with v2.3.0 field names
+            const data = await res.json();
+            const l = data.results[0]; // Grab the very first upcoming launch
+
+            if (!l) throw new Error("No upcoming launches found for the Cape.");
+
+            // Update the UI
             document.getElementById('name').innerText = l.name;
             document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
             document.getElementById('pad').innerText = l.pad.name;
@@ -59,12 +62,14 @@
             startClock(l.net);
         } catch (e) {
             console.error("Mission Control Error:", e);
-            card.innerHTML = `<h2>Connection Lost</h2><p>Check API Key or Internet.</p>`;
+            card.innerHTML = `<h2>Connection Interrupted</h2>
+                             <p style="font-size:0.8rem; color:#ff4500;">Details: ${e.message}</p>
+                             <p>Try refreshing in 60 seconds.</p>`;
         }
     }
 
-    function startClock(t) {
-        const target = new Date(t).getTime();
+    function startClock(targetTime) {
+        const target = new Date(targetTime).getTime();
         const timer = document.getElementById('countdown');
         
         setInterval(() => {
