@@ -3,169 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris the Rocket Guy's Florida Launch Tracker</title>
+    <title>Florida Launch Tracker</title>
     <style>
-        :root {
-            --bg: #0b0e14;
-            --card: #1a1d23;
-            --accent: #ff4500;
-            --text: #ffffff;
-            --text-muted: #a0a0a0;
-        }
-
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: -apple-system, system-ui, sans-serif; 
-            margin: 0; 
-            text-align: center; 
-        }
-
-        header { 
-            padding: 3rem 1rem; 
-            border-bottom: 1px solid #333; 
-            background: linear-gradient(180deg, #161b22 0%, var(--bg) 100%);
-        }
-
-        .container { max-width: 600px; margin: 20px auto; padding: 20px; }
-
-        .launch-card { 
-            background: var(--card); 
-            border: 2px solid var(--accent); 
-            border-radius: 15px; 
-            padding: 30px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .timer { 
-            font-family: monospace; 
-            font-size: 2.8rem; 
-            color: var(--accent); 
-            margin: 20px 0; 
-            font-weight: bold; 
-            background: #000;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .details { 
-            text-align: left; 
-            border-top: 1px solid #333; 
-            margin-top: 20px; 
-            padding-top: 20px; 
-        }
-
-        .details p { margin: 10px 0; font-size: 0.95rem; }
-        .details strong { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; display: block; }
-
-        .insights { 
-            background: #1c2128; 
-            border-left: 4px solid var(--accent); 
-            padding: 20px; 
-            margin-top: 40px; 
-            border-radius: 0 8px 8px 0;
-            text-align: left;
-        }
-
-        footer { padding: 40px; color: var(--text-muted); font-size: 0.8rem; }
-        footer a { color: var(--accent); text-decoration: none; font-weight: bold; margin: 0 10px; }
+        :root { --bg: #0b0e14; --card: #1a1d23; --accent: #ff4500; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; text-align: center; }
+        .container { max-width: 500px; margin: 50px auto; padding: 20px; }
+        .launch-card { background: var(--card); border: 2px solid var(--accent); border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .timer { font-family: monospace; font-size: 2.5rem; color: var(--accent); margin: 20px 0; font-weight: bold; }
+        .details { text-align: left; border-top: 1px solid #333; padding-top: 15px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Chris the Rocket Guy's</h1>
-        <h2 style="font-weight:300; margin:0;">Florida Launch Tracker</h2>
-    </header>
-
     <div class="container">
-        <div class="launch-card" id="main-card">
-            <h2 id="name" style="margin-top:0;">Scanning Pad...</h2>
+        <div class="launch-card" id="card">
+            <h2 id="name">Syncing with Mission Control...</h2>
             <div class="timer" id="countdown">00:00:00:00</div>
-            
             <div class="details">
-                <p><strong>Next Window (ET)</strong> <span id="time">Loading...</span></p>
-                <p><strong>Vehicle</strong> <span id="rocket">...</span></p>
-                <p><strong>Launch Pad</strong> <span id="pad">...</span></p>
+                <p><strong>Vehicle:</strong> <span id="rocket">...</span></p>
+                <p><strong>Pad:</strong> <span id="pad">...</span></p>
             </div>
         </div>
-
-        <section class="insights">
-            <h3 style="margin-top:0; color:var(--accent);">🏨 Holiday Inn Resort Info</h3>
-            <p>I'm currently documenting the best balcony vantage points for upcoming missions. Check back soon for my expert viewing guide!</p>
-        </section>
-
-        <footer>
-            <a href="https://www.facebook.com" target="_blank">Facebook</a> | 
-            <a href="mailto:cjcottrill@gmail.com">Email Chris</a>
-            <p style="margin-top:20px;">Times shown in Eastern Time (ET). Data via LL2 API.</p>
-        </footer>
     </div>
-
     <script>
         const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05';
-
-        async function loadLaunchData() {
+        
+        async function load() {
             try {
-                // TheSpaceDevs v2.3.0 endpoint for KSC (12) and Cape Canaveral (27)
+                // We use v2.2.0 for maximum stability with the proxy
                 const target = `https://ll.thespacedevs.com`;
-                
-                // AllOrigins proxy wraps the response to fix CORS/406 errors
                 const proxyUrl = `https://api.allorigins.win{encodeURIComponent(target)}`;
 
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error("Proxy connection failed");
-
-                const proxyData = await response.json();
+                const res = await fetch(proxyUrl);
+                const proxyData = await res.json();
+                
+                // CRITICAL: Proxy wraps data in 'contents' string, so we must parse it back to JSON
                 const data = JSON.parse(proxyData.contents);
-                const l = data.results[0]; // Get first launch from results array
+                const l = data.results[0];
 
-                if (!l) {
-                    document.getElementById('name').innerText = "No launches found.";
-                    return;
-                }
+                if (!l) throw new Error("No launch found");
 
-                // Update the Website UI
                 document.getElementById('name').innerText = l.name;
                 document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
                 document.getElementById('pad').innerText = l.pad.name;
                 
-                // Format time to Eastern Time
-                const etTime = new Date(l.net).toLocaleString('en-US', {
-                    timeZone: 'America/New_York',
-                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                });
-                document.getElementById('time').innerText = etTime + " ET";
-
-                startCountdown(l.net);
-            } catch (err) {
-                console.error(err);
-                document.getElementById('main-card').innerHTML = `<h2>Offline</h2><p>Connection Interrupted. Check back later.</p>`;
+                startClock(l.net);
+            } catch (e) {
+                console.error(e);
+                document.getElementById('card').innerHTML = `<h2>Signal Lost</h2><p>Check API Key Status at TheSpaceDevs.com</p>`;
             }
         }
 
-        function startCountdown(targetTime) {
-            const dest = new Date(targetTime).getTime();
-            
+        function startClock(t) {
+            const target = new Date(t).getTime();
             setInterval(() => {
-                const now = new Date().getTime();
-                const diff = dest - now;
-
-                if (diff < 0) {
-                    document.getElementById('countdown').innerText = "LIFTOFF!";
-                    return;
-                }
-
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((diff % (1000 * 60)) / 1000);
-
+                const diff = target - Date.now();
+                if (diff < 0) { document.getElementById('countdown').innerText = "LIFTOFF!"; return; }
+                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
                 document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
             }, 1000);
         }
-
-        loadLaunchData();
+        load();
     </script>
 </body>
 </html>
