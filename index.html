@@ -33,14 +33,44 @@
 async function load() {
     const card = document.getElementById('card');
     try {
-        const url = `
+        // Updated to v2.3.0 stable. We add &format=json to be extra clear.
+        const url = `https://ll.thespacedevs.com`;
+        
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: { 
+                'Authorization': `Token ${API_KEY}`,
+                // We keep it broad to avoid the 406 error
+                'Accept': '*/*'
+            }
+        });
 
-            const res = await fetch(url, {
-                method: 'GET',
-                headers: { 
-                    'Authorization': `Token ${API_KEY}`,
-                    'Accept': 'application/json'
-                }
+        if (!res.ok) {
+            throw new Error(`Status ${res.status}`);
+        }
+
+        const data = await res.json();
+        
+        // In v2.3.0, upcoming launches are inside 'results'
+        const l = data.results[0]; 
+
+        if (!l) {
+            document.getElementById('name').innerText = "No upcoming launches found.";
+            return;
+        }
+
+        // Update the screen with the data
+        document.getElementById('name').innerText = l.name;
+        document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
+        document.getElementById('pad').innerText = l.pad.name;
+
+        startClock(l.net);
+    } catch (e) {
+        console.error("API Fetch Error:", e);
+        // If it fails again, let's see why
+        card.innerHTML = `<h2>Launch Data Offline</h2><p style="color:red;">Error: ${e.message}</p><p>Check your Space Devs account status.</p>`;
+    }
+}
             });
 
             if (!res.ok) {
