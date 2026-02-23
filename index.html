@@ -26,54 +26,65 @@
             </div>
         </div>
     </div>
-    <script>
-    // YOUR API KEY
+   <script>
     const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05'; 
-    const LOCATIONS = '12,27'; 
+    const LOCATIONS = '12,27'; // KSC and CCSFS
 
     async function load() {
+        const card = document.getElementById('card');
         try {
-            // Using a different robust proxy and the 2.2.0 stable endpoint
-            const url = `https://api.allorigins.win{encodeURIComponent(`https://ll.thespacedevs.com{LOCATIONS}`)}`;
-            
-            const res = await fetch(url);
+            // Updated to v2.3.0 and using a fresh proxy link
+            const targetUrl = `https://ll.thespacedevs.com{LOCATIONS}`;
+            const proxyUrl = `https://api.allorigins.win{encodeURIComponent(targetUrl)}`;
+
+            const res = await fetch(proxyUrl);
             const proxyData = await res.json();
             
-            // allorigins wraps the data, so we parse it here
+            // Parse the actual data from the proxy wrapper
             const data = JSON.parse(proxyData.contents);
-            
-            if (!data.results || data.results.length === 0) {
-                throw new Error("No launches found");
+
+            // In v2.3.0, the first launch is results[0]
+            const l = data.results[0];
+
+            if (!l) {
+                document.getElementById('name').innerText = "No launches found.";
+                return;
             }
 
-            const l = data.results[0]; // Get the very next one
-            
+            // Update the UI with v2.3.0 field names
             document.getElementById('name').innerText = l.name;
             document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
             document.getElementById('pad').innerText = l.pad.name;
-            
+
             startClock(l.net);
-        } catch (e) { 
-            console.error(e);
-            document.getElementById('card').innerHTML = `<h2>Houston, we have a problem.</h2><p style="font-size:0.8rem; color:red;">${e.message}</p><p>Check if your Space Devs account is active.</p>`; 
+        } catch (e) {
+            console.error("Mission Control Error:", e);
+            card.innerHTML = `<h2>Connection Lost</h2><p>Check API Key or Internet.</p>`;
         }
     }
 
     function startClock(t) {
         const target = new Date(t).getTime();
+        const timer = document.getElementById('countdown');
+        
         setInterval(() => {
-            const diff = target - Date.now();
-            if (diff < 0) { 
-                document.getElementById('countdown').innerText = "LIFTOFF!"; 
-                return; 
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            if (diff < 0) {
+                timer.innerText = "LIFTOFF!";
+                return;
             }
-            const d = Math.floor(diff/86400000);
-            const h = Math.floor((diff%86400000)/3600000);
-            const m = Math.floor((diff%3600000)/60000);
-            const s = Math.floor((diff%60000)/1000);
-            document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            timer.innerText = `${d}d ${h}h ${m}m ${s}s`;
         }, 1000);
     }
+
     load();
 </script>
 </body>
