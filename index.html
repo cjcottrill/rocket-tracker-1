@@ -3,66 +3,1333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Florida Launch Tracker</title>
+    <title>Chris The Rocket Guy 🚀</title>
     <style>
-        :root { --bg: #0b0e14; --card: #1a1d23; --accent: #ff4500; --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; text-align: center; }
-        .container { max-width: 500px; margin: 50px auto; padding: 20px; }
-        .launch-card { background: var(--card); border: 2px solid var(--accent); border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .timer { font-family: monospace; font-size: 2.5rem; color: var(--accent); margin: 20px 0; font-weight: bold; }
-        .details { text-align: left; border-top: 1px solid #333; padding-top: 15px; font-size: 0.9rem; }
+        /* ============================================
+           CSS - This controls how everything LOOKS
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a2e;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER / NAVIGATION --- */
+        header {
+            background: linear-gradient(135deg, #1a1a4e, #0a0a2e);
+            border-bottom: 2px solid #ff6b35;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .logo span {
+            color: #ffffff;
+        }
+
+        nav {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: transparent;
+            color: #cccccc;
+            border: 1px solid #333366;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        nav button:hover,
+        nav button.active {
+            background: #ff6b35;
+            color: #ffffff;
+            border-color: #ff6b35;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 20px;
+            background: radial-gradient(ellipse at top, #1a1a4e 0%, #0a0a2e 70%);
+        }
+
+        .hero h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #aaaacc;
+            font-size: 1.1em;
+        }
+
+        /* --- COUNTDOWN SECTION --- */
+        .next-launch-countdown {
+            background: linear-gradient(135deg, #1a1a4e, #2a1a4e);
+            border: 1px solid #ff6b35;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 700px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .next-launch-countdown h2 {
+            color: #ff6b35;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .next-launch-countdown .mission-name {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-unit {
+            background: #0a0a2e;
+            border-radius: 10px;
+            padding: 10px 15px;
+            min-width: 70px;
+        }
+
+        .countdown-unit .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .countdown-unit .label {
+            font-size: 0.75em;
+            color: #aaaacc;
+            text-transform: uppercase;
+        }
+
+        /* --- STATUS FILTER TABS --- */
+        .status-filters {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px 20px;
+            flex-wrap: wrap;
+        }
+
+        .status-filters button {
+            background: #1a1a4e;
+            color: #cccccc;
+            border: 1px solid #333366;
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .status-filters button:hover,
+        .status-filters button.active {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        /* --- SEARCH BAR --- */
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 20px;
+            padding: 0 20px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid #333366;
+            background: #1a1a4e;
+            color: #ffffff;
+            font-size: 1em;
+            outline: none;
+        }
+
+        .search-container input::placeholder {
+            color: #666699;
+        }
+
+        .search-container input:focus {
+            border-color: #ff6b35;
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* --- LOADING SPINNER --- */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #333366;
+            border-top: 4px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- LAUNCH CARDS --- */
+        .launches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .launch-card {
+            background: linear-gradient(135deg, #1a1a4e, #151544);
+            border: 1px solid #333366;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .launch-card:hover {
+            transform: translateY(-3px);
+            border-color: #ff6b35;
+        }
+
+        .launch-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #0a0a2e;
+        }
+
+        .launch-card-body {
+            padding: 15px;
+        }
+
+        .launch-card-body h3 {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .launch-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.85em;
+            color: #aaaacc;
+        }
+
+        .launch-meta .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .launch-meta .meta-row .icon {
+            width: 16px;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .status-go {
+            background: #1a4a1a;
+            color: #44cc44;
+            border: 1px solid #44cc44;
+        }
+
+        .status-tbd {
+            background: #4a4a1a;
+            color: #cccc44;
+            border: 1px solid #cccc44;
+        }
+
+        .status-success {
+            background: #1a4a1a;
+            color: #44cc44;
+            border: 1px solid #44cc44;
+        }
+
+        .status-failure {
+            background: #4a1a1a;
+            color: #cc4444;
+            border: 1px solid #cc4444;
+        }
+
+        .status-tbc {
+            background: #1a3a4a;
+            color: #44aacc;
+            border: 1px solid #44aacc;
+        }
+
+        .status-default {
+            background: #2a2a4a;
+            color: #aaaacc;
+            border: 1px solid #aaaacc;
+        }
+
+        /* --- DETAIL MODAL --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: start;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: #1a1a4e;
+            border: 1px solid #ff6b35;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 100%;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333366;
+        }
+
+        .modal-header h2 {
+            font-size: 1.2em;
+            color: #ff6b35;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-close:hover {
+            color: #ff6b35;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-body h3 {
+            margin-bottom: 10px;
+        }
+
+        .modal-body p {
+            color: #aaaacc;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            background: #0a0a2e;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .detail-item .detail-label {
+            font-size: 0.75em;
+            color: #666699;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .detail-value {
+            font-size: 0.95em;
+            color: #ffffff;
+        }
+
+        /* --- PAGINATION --- */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 30px 20px;
+        }
+
+        .pagination button {
+            background: #1a1a4e;
+            color: #ffffff;
+            border: 1px solid #ff6b35;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #ff6b35;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            color: #aaaacc;
+            font-size: 0.9em;
+        }
+
+        /* --- NEWS SECTION --- */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .news-card {
+            background: linear-gradient(135deg, #1a1a4e, #151544);
+            border: 1px solid #333366;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-3px);
+            border-color: #ff6b35;
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .news-card-body {
+            padding: 15px;
+        }
+
+        .news-card-body h3 {
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+
+        .news-card-body h3 a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .news-card-body h3 a:hover {
+            color: #ff6b35;
+        }
+
+        .news-card-body p {
+            font-size: 0.85em;
+            color: #aaaacc;
+            line-height: 1.5;
+        }
+
+        .news-card-body .news-date {
+            font-size: 0.75em;
+            color: #666699;
+            margin-top: 8px;
+        }
+
+        /* --- CACHE INDICATOR --- */
+        .cache-indicator {
+            text-align: center;
+            padding: 8px;
+            font-size: 0.8em;
+            color: #666699;
+        }
+
+        .cache-indicator.from-cache {
+            color: #44cc44;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid #333366;
+            color: #666699;
+            font-size: 0.85em;
+        }
+
+        footer a {
+            color: #ff6b35;
+            text-decoration: none;
+        }
+
+        /* --- ERROR MESSAGE --- */
+        .error-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #cc4444;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 1.4em;
+            }
+
+            .launches-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .countdown-unit .number {
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="launch-card" id="card">
-            <h2 id="name">Syncing with Mission Control...</h2>
-            <div class="timer" id="countdown">00:00:00:00</div>
-            <div class="details">
-                <p><strong>Vehicle:</strong> <span id="rocket">...</span></p>
-                <p><strong>Pad:</strong> <span id="pad">...</span></p>
+
+    <!-- ============================================
+         HEADER WITH NAVIGATION
+         ============================================ -->
+    <header>
+        <div class="header-content">
+            <div class="logo">🚀 Chris <span>The Rocket Guy</span></div>
+            <nav>
+                <button class="active" onclick="switchTab('upcoming')">Upcoming</button>
+                <button onclick="switchTab('previous')">Previous</button>
+                <button onclick="switchTab('news')">News</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================
+         HERO SECTION
+         ============================================ -->
+    <section class="hero">
+        <h1>🚀 Chris The Rocket Guy</h1>
+        <p>Track every rocket launch from Florida's Space Coast!</p>
+    </section>
+
+    <!-- ============================================
+         NEXT LAUNCH COUNTDOWN
+         ============================================ -->
+    <div class="next-launch-countdown" id="countdownSection">
+        <h2>🔥 NEXT LAUNCH</h2>
+        <div class="mission-name" id="countdownName">Loading...</div>
+        <div class="countdown-timer" id="countdownTimer">
+            <div class="countdown-unit">
+                <div class="number" id="cd-days">--</div>
+                <div class="label">Days</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="number" id="cd-hours">--</div>
+                <div class="label">Hours</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="number" id="cd-mins">--</div>
+                <div class="label">Mins</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="number" id="cd-secs">--</div>
+                <div class="label">Secs</div>
             </div>
         </div>
     </div>
+
+    <!-- ============================================
+         CACHE INDICATOR
+         ============================================ -->
+    <div class="cache-indicator" id="cacheIndicator"></div>
+
+    <!-- ============================================
+         SEARCH BAR
+         ============================================ -->
+    <div class="search-container" id="searchContainer">
+        <input type="text" id="searchInput" placeholder="Search launches..." oninput="handleSearch()">
+    </div>
+
+    <!-- ============================================
+         STATUS FILTER TABS
+         ============================================ -->
+    <div class="status-filters" id="statusFilters">
+        <button class="active" onclick="setStatusFilter('all')">All</button>
+        <button onclick="setStatusFilter('Go')">Go ✅</button>
+        <button onclick="setStatusFilter('TBD')">TBD ⏳</button>
+        <button onclick="setStatusFilter('TBC')">TBC 📋</button>
+        <button onclick="setStatusFilter('Success')">Success 🎉</button>
+        <button onclick="setStatusFilter('Failure')">Failure ❌</button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - Launches load here
+         ============================================ -->
+    <div class="content" id="mainContent">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Fetching launch data from the cosmos...</p>
+        </div>
+    </div>
+
+    <!-- ============================================
+         PAGINATION
+         ============================================ -->
+    <div class="pagination" id="pagination" style="display: none;">
+        <button id="prevBtn" onclick="changePage(-1)">← Previous</button>
+        <span class="page-info" id="pageInfo">Page 1</span>
+        <button id="nextBtn" onclick="changePage(1)">Next →</button>
+    </div>
+
+    <!-- ============================================
+         LAUNCH DETAIL MODAL
+         ============================================ -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Launch Details</h2>
+                <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">✕</button>
+            </div>
+            <img class="modal-image" id="modalImage" src="" alt="Launch image">
+            <div class="modal-body" id="modalBody">
+                <!-- Filled by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT - This controls how everything WORKS
+         ============================================ -->
     <script>
-        const API_KEY = '38a80c13af7e773108ad460061834a48cdb0bb05';
-        
-        async function load() {
-            try {
-                // We use v2.2.0 for maximum stability with the proxy
-                const target = `https://ll.thespacedevs.com`;
-                const proxyUrl = `https://api.allorigins.win{encodeURIComponent(target)}`;
+        // =============================================
+        // CONFIGURATION
+        // =============================================
+        const API_BASE = 'https://ll.thespacedevs.com/2.2.0';
+        const RESULTS_PER_PAGE = 12;
 
-                const res = await fetch(proxyUrl);
-                const proxyData = await res.json();
-                
-                // CRITICAL: Proxy wraps data in 'contents' string, so we must parse it back to JSON
-                const data = JSON.parse(proxyData.contents);
-                const l = data.results[0];
+        // =============================================
+        // CACHE SYSTEM 💾
+        // Saves API data so we don't refetch too soon
+        // =============================================
+        const cache = {};
 
-                if (!l) throw new Error("No launch found");
+        // How long each type of data stays fresh (in minutes)
+        const CACHE_DURATIONS = {
+            upcoming: 5,     // Upcoming launches: 5 minutes (can change frequently)
+            previous: 30,    // Previous launches: 30 minutes (rarely changes)
+            news: 15          // News articles: 15 minutes
+        };
 
-                document.getElementById('name').innerText = l.name;
-                document.getElementById('rocket').innerText = l.rocket.configuration.full_name;
-                document.getElementById('pad').innerText = l.pad.name;
-                
-                startClock(l.net);
-            } catch (e) {
-                console.error(e);
-                document.getElementById('card').innerHTML = `<h2>Signal Lost</h2><p>Check API Key Status at TheSpaceDevs.com</p>`;
+        // Creates a unique key for each request so we can find it later
+        function getCacheKey(type, page) {
+            return `${type}_page${page}`;
+        }
+
+        // Checks if we have fresh cached data
+        // Returns the data if fresh, or null if expired/missing
+        function getCachedData(key, type) {
+            const cached = cache[key];
+            if (!cached) return null;
+
+            const now = Date.now();
+            const ageInMinutes = (now - cached.timestamp) / 1000 / 60;
+            const maxAge = CACHE_DURATIONS[type] || 5;
+
+            if (ageInMinutes < maxAge) {
+                // Data is still fresh!
+                const remainingMins = Math.round(maxAge - ageInMinutes);
+                console.log(`💾 Cache HIT for "${key}" — ${remainingMins} min until refresh`);
+                return cached.data;
+            } else {
+                // Data is stale, remove it
+                console.log(`🗑️ Cache EXPIRED for "${key}" — fetching fresh data`);
+                delete cache[key];
+                return null;
             }
         }
 
-        function startClock(t) {
-            const target = new Date(t).getTime();
-            setInterval(() => {
-                const diff = target - Date.now();
-                if (diff < 0) { document.getElementById('countdown').innerText = "LIFTOFF!"; return; }
-                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-                document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
-            }, 1000);
+        // Saves data to the cache with a timestamp
+        function setCachedData(key, data) {
+            cache[key] = {
+                data: data,
+                timestamp: Date.now()
+            };
+            console.log(`💾 Cached "${key}" — ${Object.keys(cache).length} items in cache`);
         }
-        load();
+
+        // Shows a small message telling the user where data came from
+        function showCacheIndicator(fromCache, type) {
+            const indicator = document.getElementById('cacheIndicator');
+            if (fromCache) {
+                const maxAge = CACHE_DURATIONS[type] || 5;
+                indicator.textContent = `⚡ Loaded instantly from cache (refreshes every ${maxAge} min)`;
+                indicator.className = 'cache-indicator from-cache';
+            } else {
+                indicator.textContent = `🌐 Fetched fresh data from API`;
+                indicator.className = 'cache-indicator';
+            }
+            // Fade out after 3 seconds
+            setTimeout(() => {
+                indicator.textContent = '';
+            }, 3000);
+        }
+
+        // =============================================
+        // APPLICATION STATE
+        // We keep track of what's happening here
+        // =============================================
+        let state = {
+            currentTab: 'upcoming',      // 'upcoming', 'previous', or 'news'
+            currentPage: 1,
+            totalResults: 0,
+            nextUrl: null,
+            previousUrl: null,
+            launches: [],                 // current page of launches
+            filteredLaunches: [],
+            statusFilter: 'all',
+            searchQuery: '',
+            nextLaunchDate: null,         // for countdown
+            countdownInterval: null
+        };
+
+        // =============================================
+        // TAB SWITCHING
+        // =============================================
+        function switchTab(tab) {
+            state.currentTab = tab;
+            state.currentPage = 1;
+            state.statusFilter = 'all';
+            state.searchQuery = '';
+
+            // Update active button in nav
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Reset search input
+            document.getElementById('searchInput').value = '';
+
+            // Reset status filter buttons
+            document.querySelectorAll('.status-filters button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.status-filters button:first-child').classList.add('active');
+
+            // Show/hide elements based on tab
+            const isNews = tab === 'news';
+            document.getElementById('countdownSection').style.display = tab === 'upcoming' ? 'block' : 'none';
+            document.getElementById('searchContainer').style.display = isNews ? 'none' : 'block';
+            document.getElementById('statusFilters').style.display = isNews ? 'none' : 'flex';
+
+            // Load data
+            if (isNews) {
+                loadNews();
+            } else {
+                loadLaunches();
+            }
+        }
+
+        // =============================================
+        // LOAD LAUNCHES FROM API (with caching!)
+        // =============================================
+        async function loadLaunches() {
+            const content = document.getElementById('mainContent');
+            const pagination = document.getElementById('pagination');
+
+            // Step 1: Check the cache first!
+            const cacheKey = getCacheKey(state.currentTab, state.currentPage);
+            const cachedData = getCachedData(cacheKey, state.currentTab);
+
+            if (cachedData) {
+                // We have fresh data — use it instantly! ⚡
+                state.launches = cachedData.results || [];
+                state.totalResults = cachedData.count || 0;
+                state.nextUrl = cachedData.next;
+                state.previousUrl = cachedData.previous;
+
+                if (state.currentTab === 'upcoming' && state.currentPage === 1 && state.launches.length > 0) {
+                    setupCountdown(state.launches[0]);
+                }
+
+                applyFilters();
+                showCacheIndicator(true, state.currentTab);
+                return;  // Done! No API call needed
+            }
+
+            // Step 2: No cache — show loading and fetch from API
+            content.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Fetching launch data from the cosmos...</p>
+                </div>
+            `;
+            pagination.style.display = 'none';
+
+            try {
+                const offset = (state.currentPage - 1) * RESULTS_PER_PAGE;
+                let url;
+
+                if (state.currentTab === 'upcoming') {
+                    url = `${API_BASE}/launch/upcoming/?limit=${RESULTS_PER_PAGE}&offset=${offset}&mode=detailed&location__ids=12,27`;
+                } else {
+                    url = `${API_BASE}/launch/previous/?limit=${RESULTS_PER_PAGE}&offset=${offset}&mode=detailed&location__ids=12,27`;
+                }
+
+                console.log('🌐 Fetching:', url);
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': 'Token 4ac401f3abc3ea11ca947c1c2d69a2bba08a5e5d'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API responded with status ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Step 3: Save to cache for next time!
+                setCachedData(cacheKey, data);
+
+                // Save to state
+                state.launches = data.results || [];
+                state.totalResults = data.count || 0;
+                state.nextUrl = data.next;
+                state.previousUrl = data.previous;
+
+                if (state.currentTab === 'upcoming' && state.currentPage === 1 && state.launches.length > 0) {
+                    setupCountdown(state.launches[0]);
+                }
+
+                applyFilters();
+                showCacheIndicator(false, state.currentTab);
+
+            } catch (error) {
+                console.error('Error loading launches:', error);
+                content.innerHTML = `
+                    <div class="error-message">
+                        <h2>😞 Oops! Something went wrong</h2>
+                        <p>Could not load launch data. This might be because:</p>
+                        <ul style="text-align: left; max-width: 400px; margin: 15px auto; color: #aaaacc;">
+                            <li>The API rate limit has been reached</li>
+                            <li>Your internet connection has an issue</li>
+                            <li>The API might be temporarily down</li>
+                        </ul>
+                        <p style="margin-top: 15px;">
+                            <button onclick="loadLaunches()" style="background: #ff6b35; color: white; border: none; padding: 10px 25px; border-radius: 25px; cursor: pointer; font-size: 1em;">
+                                Try Again
+                            </button>
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // =============================================
+        // LOAD NEWS (with caching!)
+        // =============================================
+        async function loadNews() {
+            const content = document.getElementById('mainContent');
+            const pagination = document.getElementById('pagination');
+
+            // Step 1: Check the cache first!
+            const cacheKey = getCacheKey('news', state.currentPage);
+            const cachedData = getCachedData(cacheKey, 'news');
+
+            if (cachedData) {
+                // We have fresh data — use it instantly! ⚡
+                state.totalResults = cachedData.count || 0;
+                state.nextUrl = cachedData.next;
+                state.previousUrl = cachedData.previous;
+
+                renderNews(cachedData.results || []);
+                updatePagination();
+                showCacheIndicator(true, 'news');
+                return;  // Done! No API call needed
+            }
+
+            // Step 2: No cache — show loading and fetch from API
+            content.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Fetching space news...</p>
+                </div>
+            `;
+            pagination.style.display = 'none';
+
+            try {
+                const offset = (state.currentPage - 1) * RESULTS_PER_PAGE;
+                const url = `https://api.spaceflightnewsapi.net/v4/articles/?limit=${RESULTS_PER_PAGE}&offset=${offset}`;
+
+                console.log('🌐 Fetching:', url);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('News API error');
+
+                const data = await response.json();
+
+                // Step 3: Save to cache for next time!
+                setCachedData(cacheKey, data);
+
+                state.totalResults = data.count || 0;
+                state.nextUrl = data.next;
+                state.previousUrl = data.previous;
+
+                renderNews(data.results || []);
+                updatePagination();
+                showCacheIndicator(false, 'news');
+
+            } catch (error) {
+                console.error('Error loading news:', error);
+                content.innerHTML = `
+                    <div class="error-message">
+                        <h2>📰 Could not load news</h2>
+                        <p>Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // =============================================
+        // SEARCH & FILTER
+        // =============================================
+        function handleSearch() {
+            state.searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            applyFilters();
+        }
+
+        function setStatusFilter(filter) {
+            state.statusFilter = filter;
+
+            // Update active button
+            document.querySelectorAll('.status-filters button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let launches = [...state.launches];
+
+            // Apply status filter
+            if (state.statusFilter !== 'all') {
+                launches = launches.filter(launch => {
+                    const statusName = launch.status?.name || '';
+                    return statusName.toLowerCase().includes(state.statusFilter.toLowerCase());
+                });
+            }
+
+            // Apply search filter
+            if (state.searchQuery) {
+                launches = launches.filter(launch => {
+                    const name = (launch.name || '').toLowerCase();
+                    const provider = (launch.launch_service_provider?.name || '').toLowerCase();
+                    const pad = (launch.pad?.name || '').toLowerCase();
+                    const location = (launch.pad?.location?.name || '').toLowerCase();
+                    const rocketName = (launch.rocket?.configuration?.name || '').toLowerCase();
+                    const query = state.searchQuery;
+
+                    return name.includes(query) ||
+                           provider.includes(query) ||
+                           pad.includes(query) ||
+                           location.includes(query) ||
+                           rocketName.includes(query);
+                });
+            }
+
+            state.filteredLaunches = launches;
+            renderLaunches(launches);
+            updatePagination();
+        }
+
+        // =============================================
+        // RENDER LAUNCHES
+        // =============================================
+        function renderLaunches(launches) {
+            const content = document.getElementById('mainContent');
+
+            if (launches.length === 0) {
+                content.innerHTML = `
+                    <div class="error-message">
+                        <h2>🔍 No launches found</h2>
+                        <p>Try changing your search or filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="launches-grid">';
+
+            launches.forEach((launch, index) => {
+                const imageUrl = launch.image || 'https://via.placeholder.com/400x200/0a0a2e/666699?text=No+Image';
+                const date = launch.net ? new Date(launch.net).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                }) : 'TBD';
+
+                const statusName = launch.status?.name || 'Unknown';
+                const statusClass = getStatusClass(statusName);
+                const provider = launch.launch_service_provider?.name || 'Unknown Provider';
+                const location = launch.pad?.location?.name || 'Unknown Location';
+                const rocketName = launch.rocket?.configuration?.name || 'Unknown Rocket';
+
+                html += `
+                    <div class="launch-card" onclick="openModal(${index})">
+                        <img class="launch-card-image" src="${imageUrl}" alt="${launch.name}" 
+                             onerror="this.src='https://via.placeholder.com/400x200/0a0a2e/666699?text=No+Image'">
+                        <div class="launch-card-body">
+                            <h3>${launch.name || 'Unnamed Launch'}</h3>
+                            <div class="launch-meta">
+                                <div class="meta-row">
+                                    <span class="icon">🚀</span>
+                                    <span>${rocketName}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="icon">🏢</span>
+                                    <span>${provider}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="icon">📍</span>
+                                    <span>${location}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="icon">📅</span>
+                                    <span>${date}</span>
+                                </div>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusName}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        // =============================================
+        // RENDER NEWS
+        // =============================================
+        function renderNews(articles) {
+            const content = document.getElementById('mainContent');
+
+            if (articles.length === 0) {
+                content.innerHTML = `
+                    <div class="error-message">
+                        <h2>📰 No news found</h2>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="news-grid">';
+
+            articles.forEach(article => {
+                const imageUrl = article.image_url || 'https://via.placeholder.com/400x200/0a0a2e/666699?text=Space+News';
+                const date = article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) : '';
+
+                const summary = article.summary
+                    ? (article.summary.length > 150 ? article.summary.substring(0, 150) + '...' : article.summary)
+                    : '';
+
+                html += `
+                    <div class="news-card">
+                        <img src="${imageUrl}" alt="${article.title}" 
+                             onerror="this.src='https://via.placeholder.com/400x200/0a0a2e/666699?text=Space+News'">
+                        <div class="news-card-body">
+                            <h3><a href="${article.url}" target="_blank">${article.title}</a></h3>
+                            <p>${summary}</p>
+                            <div class="news-date">📰 ${article.news_site || ''} · ${date}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        // =============================================
+        // COUNTDOWN TIMER
+        // =============================================
+        function setupCountdown(launch) {
+            if (state.countdownInterval) {
+                clearInterval(state.countdownInterval);
+            }
+
+            document.getElementById('countdownName').textContent = launch.name || 'Unknown Mission';
+
+            if (!launch.net) {
+                document.getElementById('countdownTimer').innerHTML = '<p style="color: #aaaacc;">Launch time TBD</p>';
+                return;
+            }
+
+            state.nextLaunchDate = new Date(launch.net);
+            updateCountdown();
+            state.countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = state.nextLaunchDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('cd-days').textContent = '0';
+                document.getElementById('cd-hours').textContent = '0';
+                document.getElementById('cd-mins').textContent = '0';
+                document.getElementById('cd-secs').textContent = '0';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cd-days').textContent = days;
+            document.getElementById('cd-hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('cd-mins').textContent = mins.toString().padStart(2, '0');
+            document.getElementById('cd-secs').textContent = secs.toString().padStart(2, '0');
+        }
+
+        // =============================================
+        // LAUNCH DETAIL MODAL
+        // =============================================
+        function openModal(index) {
+            const launch = state.filteredLaunches[index];
+            if (!launch) return;
+
+            const modal = document.getElementById('modalOverlay');
+            const imageUrl = launch.image || 'https://via.placeholder.com/700x300/0a0a2e/666699?text=No+Image';
+
+            document.getElementById('modalTitle').textContent = launch.name || 'Launch Details';
+            document.getElementById('modalImage').src = imageUrl;
+
+            const date = launch.net ? new Date(launch.net).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            }) : 'TBD';
+
+            const provider = launch.launch_service_provider?.name || 'Unknown';
+            const providerType = launch.launch_service_provider?.type || '';
+            const rocketName = launch.rocket?.configuration?.name || 'Unknown';
+            const rocketFamily = launch.rocket?.configuration?.family || '';
+            const padName = launch.pad?.name || 'Unknown';
+            const location = launch.pad?.location?.name || 'Unknown';
+            const statusName = launch.status?.name || 'Unknown';
+            const statusDesc = launch.status?.description || '';
+            const missionName = launch.mission?.name || 'N/A';
+            const missionDesc = launch.mission?.description || 'No mission description available.';
+            const missionType = launch.mission?.type || 'N/A';
+            const orbit = launch.mission?.orbit?.name || 'N/A';
+
+            let webcastHtml = '';
+            if (launch.vidURLs && launch.vidURLs.length > 0) {
+                webcastHtml = '<div style="margin-top: 15px;"><strong>📺 Watch Live:</strong><br>';
+                launch.vidURLs.forEach(vid => {
+                    webcastHtml += `<a href="${vid.url}" target="_blank" style="color: #ff6b35; margin-right: 10px;">${vid.title || 'Webcast'}</a> `;
+                });
+                webcastHtml += '</div>';
+            }
+
+            document.getElementById('modalBody').innerHTML = `
+                <h3>${missionName}</h3>
+                <p>${missionDesc}</p>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">📅 Date</div>
+                        <div class="detail-value">${date}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📊 Status</div>
+                        <div class="detail-value">${statusName}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🚀 Rocket</div>
+                        <div class="detail-value">${rocketName}${rocketFamily ? ' (' + rocketFamily + ')' : ''}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🏢 Provider</div>
+                        <div class="detail-value">${provider}${providerType ? ' (' + providerType + ')' : ''}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📍 Launch Pad</div>
+                        <div class="detail-value">${padName}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🌍 Location</div>
+                        <div class="detail-value">${location}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🎯 Mission Type</div>
+                        <div class="detail-value">${missionType}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">🌌 Orbit</div>
+                        <div class="detail-value">${orbit}</div>
+                    </div>
+                </div>
+
+                ${statusDesc ? `<p style="margin-top: 15px; font-size: 0.85em;"><em>${statusDesc}</em></p>` : ''}
+                ${webcastHtml}
+            `;
+
+            modal.classList.add('open');
+        }
+
+        function closeModal(event) {
+            if (event.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('open');
+            }
+        }
+
+        // =============================================
+        // PAGINATION
+        // =============================================
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(state.totalResults / RESULTS_PER_PAGE);
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+            document.getElementById('pageInfo').textContent = `Page ${state.currentPage} of ${totalPages}`;
+            document.getElementById('prevBtn').disabled = state.currentPage <= 1;
+            document.getElementById('nextBtn').disabled = state.currentPage >= totalPages;
+        }
+
+        function changePage(direction) {
+            state.currentPage += direction;
+            if (state.currentTab === 'news') {
+                loadNews();
+            } else {
+                loadLaunches();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =============================================
+        // HELPER: Get CSS class for status badge
+        // =============================================
+        function getStatusClass(status) {
+            const s = status.toLowerCase();
+            if (s.includes('go for launch') || s.includes('go')) return 'status-go';
+            if (s.includes('tbd')) return 'status-tbd';
+            if (s.includes('tbc')) return 'status-tbc';
+            if (s.includes('success')) return 'status-success';
+            if (s.includes('fail') || s.includes('partial')) return 'status-failure';
+            return 'status-default';
+        }
+
+        // =============================================
+        // INITIALIZE - This runs when the page loads!
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Chris The Rocket Guy is launching...');
+            console.log('💾 Cache system active — durations:', CACHE_DURATIONS);
+            loadLaunches();
+        });
     </script>
+
 </body>
 </html>
