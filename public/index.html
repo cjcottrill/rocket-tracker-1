@@ -3,24 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris The Rocket Guy – Florida Space Coast Launch Tracker</title>
-    <meta name="description" content="Track upcoming rocket launches from Florida's Space Coast. Live countdown timers, launch details, and more.">
+    <title>Chris The Rocket Guy - Space Coast Launch Tracker</title>
     <style>
-        :root {
-            --bg-primary: #0a0e17;
-            --bg-card: #111827;
-            --bg-card-hover: #1a2332;
-            --accent: #f97316;
-            --accent-glow: rgba(249, 115, 22, 0.3);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border: #1e293b;
-            --success: #22c55e;
-            --warning: #eab308;
-            --danger: #ef4444;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -28,701 +12,545 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: #0a0e17;
+            color: #e0e0e0;
             min-height: 100vh;
-            line-height: 1.6;
         }
 
-        /* ── Header ── */
-        .site-header {
+        .header {
             text-align: center;
-            padding: 2.5rem 1rem 1rem;
-            border-bottom: 1px solid var(--border);
+            padding: 2rem 1rem 1rem;
+            background: linear-gradient(180deg, #0d1525 0%, #0a0e17 100%);
         }
 
-        .site-header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+        .header h1 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
         }
 
-        .site-header h1 .accent {
-            color: var(--accent);
+        .header .subtitle {
+            color: #7a8ba8;
+            font-size: 0.95rem;
         }
 
-        .site-header .tagline {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
-        }
-
-        /* ── Container ── */
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 1.5rem 1rem 3rem;
+            padding: 1rem;
         }
 
-        /* ── Loading State ── */
-        .loading {
-            text-align: center;
-            padding: 4rem 1rem;
-            color: var(--text-secondary);
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ── Error State ── */
-        .error-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--danger);
-        }
-
-        .error-state button {
-            margin-top: 1rem;
-            padding: 0.6rem 1.5rem;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        /* ── Empty State ── */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 1rem;
-        }
-
-        .empty-state .rocket-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h2 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* ── Hero Launch ── */
-        .hero-launch {
-            background: linear-gradient(135deg, var(--bg-card) 0%, #131c2e 100%);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+        /* --- NEXT LAUNCH HERO --- */
+        .hero {
+            background: linear-gradient(135deg, #111927 0%, #0d1525 100%);
+            border: 1px solid #1e2a3a;
+            border-radius: 12px;
             padding: 2rem;
             margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-launch::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), #fb923c, var(--accent));
+            text-align: center;
         }
 
         .hero-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.75rem;
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: #7a8ba8;
+            margin-bottom: 0.75rem;
         }
 
-        .hero-label .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-glow); }
-            50% { opacity: 0.7; box-shadow: 0 0 0 8px transparent; }
-        }
-
-        .hero-mission-name {
-            font-size: 1.6rem;
+        .hero-mission {
+            font-size: 1.5rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
+            color: #ffffff;
             margin-bottom: 0.25rem;
         }
 
         .hero-provider {
-            color: var(--text-secondary);
+            color: #7a8ba8;
             font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-pad {
+            color: #556b8a;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-time {
+            color: #c0c8d8;
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .hero-time-local {
+            color: #7a8ba8;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 1.25rem;
         }
 
-        .hero-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.25rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .hero-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            color: var(--text-secondary);
-        }
-
-        .hero-meta-item .label {
-            color: var(--text-muted);
-        }
-
-        /* ── Countdown ── */
-        .countdown-container {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.25rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .countdown-unit {
-            text-align: center;
-            min-width: 60px;
-        }
-
-        .countdown-value {
-            font-size: 2rem;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-
-        .countdown-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-top: 0.15rem;
-        }
-
-        .countdown-separator {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            line-height: 1.2;
-            align-self: flex-start;
-        }
-
-        .countdown-passed {
-            text-align: center;
-            color: var(--warning);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* ── Hero Status Badge ── */
-        .hero-status-badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
         .status-go {
-            background: rgba(34, 197, 94, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            background: #0b3d2e;
+            color: #34d399;
+            border: 1px solid #166534;
         }
 
-        .status-tbd, .status-tbc {
-            background: rgba(234, 179, 8, 0.15);
-            color: var(--warning);
-            border: 1px solid rgba(234, 179, 8, 0.3);
+        .status-tbd {
+            background: #2d2306;
+            color: #fbbf24;
+            border: 1px solid #854d0e;
+        }
+
+        .status-tbc {
+            background: #1e2a3a;
+            color: #60a5fa;
+            border: 1px solid #1e40af;
         }
 
         .status-hold {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: #3b1118;
+            color: #f87171;
+            border: 1px solid #991b1b;
         }
 
-        .status-unknown {
-            background: rgba(148, 163, 184, 0.15);
-            color: var(--text-secondary);
-            border: 1px solid rgba(148, 163, 184, 0.3);
-        }
-
-        /* ── Section Header ── */
-        .section-header {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* ── Launch List ── */
-        .launch-list {
+        .countdown {
             display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .countdown-unit {
+            background: #0a0e17;
+            border: 1px solid #1e2a3a;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            min-width: 70px;
+        }
+
+        .countdown-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .countdown-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #556b8a;
+            margin-top: 0.2rem;
+        }
+
+        .countdown-elapsed {
+            color: #7a8ba8;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* --- UPCOMING LIST --- */
+        .upcoming-header {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #556b8a;
+            margin-bottom: 1rem;
         }
 
         .launch-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: #111927;
+            border: 1px solid #1e2a3a;
+            border-radius: 8px;
             padding: 1.25rem;
-            transition: background 0.2s, border-color 0.2s;
-        }
-
-        .launch-card:hover {
-            background: var(--bg-card-hover);
-            border-color: #2a3a4e;
-        }
-
-        .launch-card-top {
+            margin-bottom: 0.75rem;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             gap: 1rem;
-            margin-bottom: 0.5rem;
         }
 
-        .launch-card-name {
-            font-size: 1.1rem;
+        .launch-info {
+            flex: 1;
+        }
+
+        .launch-mission {
             font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.2rem;
         }
 
-        .launch-card-provider {
-            color: var(--text-secondary);
+        .launch-provider {
             font-size: 0.85rem;
-            margin-bottom: 0.6rem;
+            color: #7a8ba8;
+            margin-bottom: 0.15rem;
         }
 
-        .launch-card-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+        .launch-pad {
+            font-size: 0.8rem;
+            color: #556b8a;
         }
 
-        .launch-card-meta .label {
-            color: var(--text-muted);
-        }
-
-        .card-status-badge {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            border-radius: 5px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            white-space: nowrap;
+        .launch-right {
+            text-align: right;
             flex-shrink: 0;
         }
 
-        .launch-card-countdown {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-variant-numeric: tabular-nums;
+        .launch-date {
+            font-size: 0.9rem;
+            color: #c0c8d8;
+            margin-bottom: 0.15rem;
         }
 
-        .launch-card-countdown .countdown-inline-value {
-            color: var(--text-primary);
+        .launch-date-local {
+            font-size: 0.8rem;
+            color: #7a8ba8;
+            margin-bottom: 0.35rem;
+        }
+
+        .launch-status {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* ── Footer ── */
-        .site-footer {
+        /* --- STATES --- */
+        .loading, .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #556b8a;
+        }
+
+        .loading {
+            font-size: 1rem;
+        }
+
+        .empty-state {
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .error-state {
             text-align: center;
             padding: 2rem 1rem;
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 0.8rem;
+            color: #f87171;
         }
 
-        .site-footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
+        .description {
+            font-size: 0.85rem;
+            color: #7a8ba8;
+            margin-top: 0.5rem;
+            line-height: 1.5;
         }
 
-        .site-footer a:hover {
-            color: var(--accent);
+        .hero .description {
+            margin-top: 1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* ── Responsive ── */
-        @media (max-width: 600px) {
-            .hero-launch {
-                padding: 1.5rem;
+        @media (max-width: 480px) {
+            .hero {
+                padding: 1.5rem 1rem;
             }
 
-            .hero-mission-name {
-                font-size: 1.3rem;
-            }
-
-            .countdown-container {
-                gap: 0.6rem;
-                padding: 1rem;
-            }
-
-            .countdown-value {
-                font-size: 1.5rem;
+            .countdown {
+                gap: 0.5rem;
             }
 
             .countdown-unit {
-                min-width: 48px;
+                min-width: 60px;
+                padding: 0.5rem 0.75rem;
             }
 
-            .countdown-separator {
-                font-size: 1.5rem;
+            .countdown-value {
+                font-size: 1.3rem;
             }
 
-            .hero-meta {
+            .launch-card {
                 flex-direction: column;
                 gap: 0.5rem;
             }
 
-            .launch-card-top {
-                flex-direction: column;
-                gap: 0.4rem;
+            .launch-right {
+                text-align: left;
             }
         }
     </style>
 </head>
 <body>
 
-<header class="site-header">
-    <h1>🚀 <span class="accent">Chris</span> The Rocket Guy</h1>
-    <p class="tagline">Florida Space Coast Launch Tracker</p>
-</header>
+<div class="header">
+    <h1>🚀 Chris The Rocket Guy</h1>
+    <p class="subtitle">Florida Space Coast Launch Tracker</p>
+</div>
 
-<main class="container" id="app">
-    <div class="loading" id="loading-state">
-        <div class="loading-spinner"></div>
-        <p>Fetching launch data…</p>
-    </div>
-</main>
-
-<footer class="site-footer">
-    <p>Data from <a href="https://thespacedevs.com/" target="_blank" rel="noopener">The Space Devs</a> &middot; Built by Chris The Rocket Guy</p>
-</footer>
+<div class="container" id="app">
+    <div class="loading">Loading launch data...</div>
+</div>
 
 <script>
-(function () {
-    'use strict';
+    // ============================================================
+    //  TIMEZONE HELPERS
+    // ============================================================
+    const FLORIDA_TZ = 'America/New_York';
 
-    const API_BASE = '/api/launches';
-    const WINDOW_DAYS = 14;
-    const app = document.getElementById('app');
-
-    // ── Helpers ──
-
-    function getWindowDates() {
-        const now = new Date();
-        const end = new Date(now.getTime() + WINDOW_DAYS * 24 * 60 * 60 * 1000);
-        return {
-            start: now.toISOString(),
-            end: end.toISOString()
-        };
+    function userIsEastern() {
+        try {
+            const userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            // Compare actual offset right now (handles DST correctly)
+            const now = new Date();
+            const floridaOffset = getOffsetMinutes(now, FLORIDA_TZ);
+            const localOffset = getOffsetMinutes(now, userTZ);
+            return floridaOffset === localOffset;
+        } catch (e) {
+            return false;
+        }
     }
 
-    function formatDate(dateStr) {
+    function getOffsetMinutes(date, tz) {
+        const str = date.toLocaleString('en-US', { timeZone: tz });
+        const localDate = new Date(str);
+        return localDate.getTime();
+    }
+
+    function formatFloridaTime(dateStr) {
         const d = new Date(dateStr);
-        return d.toLocaleDateString('en-US', {
+        return d.toLocaleString('en-US', {
+            timeZone: FLORIDA_TZ,
             weekday: 'short',
             month: 'short',
             day: 'numeric',
-            year: 'numeric'
-        });
-    }
-
-    function formatTime(dateStr) {
-        const d = new Date(dateStr);
-        return d.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
             timeZoneName: 'short'
         });
     }
 
-    function getStatusInfo(status) {
-        if (!status) return { label: 'Unknown', cls: 'status-unknown' };
-        const id = status.id;
-        const abbrev = (status.abbrev || '').toUpperCase();
-        if (id === 1 || abbrev === 'GO') return { label: 'GO', cls: 'status-go' };
-        if (id === 2 || abbrev === 'TBD') return { label: 'TBD', cls: 'status-tbd' };
-        if (id === 8 || abbrev === 'TBC') return { label: 'TBC', cls: 'status-tbc' };
-        if (id === 5 || abbrev === 'HOLD') return { label: 'Hold', cls: 'status-hold' };
-        return { label: abbrev || 'Unknown', cls: 'status-unknown' };
-    }
-
-    function getTimeDiff(dateStr) {
-        const now = Date.now();
-        const target = new Date(dateStr).getTime();
-        const diff = target - now;
-        if (diff <= 0) return null;
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        return { days, hours, minutes, seconds, total: diff };
-    }
-
-    function getPadName(launch) {
-        if (launch.pad && launch.pad.name) {
-            return launch.pad.name;
-        }
-        return null;
-    }
-
-    function getMissionType(launch) {
-        if (launch.mission && launch.mission.type) {
-            return launch.mission.type;
-        }
-        return null;
-    }
-
-    function getProviderName(launch) {
-        if (launch.launch_service_provider && launch.launch_service_provider.name) {
-            return launch.launch_service_provider.name;
-        }
-        return 'Unknown Provider';
-    }
-
-    // ── Fetch ──
-
-    async function fetchLaunches() {
-        const { start, end } = getWindowDates();
-        const params = new URLSearchParams({
-            endpoint: 'launch/upcoming',
-            window_start__gte: start,
-            window_end__lte: end,
-            limit: '25',
-            ordering: 'net'
+    function formatLocalTime(dateStr) {
+        const d = new Date(dateStr);
+        return d.toLocaleString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
         });
+    }
 
-        const response = await fetch(`${API_BASE}?${params.toString()}`);
-        if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+    function formatFloridaDateShort(dateStr) {
+        const d = new Date(dateStr);
+        return d.toLocaleString('en-US', {
+            timeZone: FLORIDA_TZ,
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+    }
+
+    function formatLocalDateShort(dateStr) {
+        const d = new Date(dateStr);
+        return d.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+    }
+
+    const showLocal = !userIsEastern();
+
+    // ============================================================
+    //  STATUS HELPERS
+    // ============================================================
+    function getStatusClass(abbrev) {
+        switch (abbrev) {
+            case 'Go': return 'status-go';
+            case 'TBD': return 'status-tbd';
+            case 'TBC': return 'status-tbc';
+            default: return 'status-hold';
         }
-        const data = await response.json();
+    }
+
+    function getStatusLabel(abbrev) {
+        switch (abbrev) {
+            case 'Go': return 'GO';
+            case 'TBD': return 'TBD';
+            case 'TBC': return 'To Be Confirmed';
+            default: return abbrev || 'Unknown';
+        }
+    }
+
+    // ============================================================
+    //  FETCH
+    // ============================================================
+    async function fetchLaunches() {
+        const now = new Date();
+        const future = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+        const gte = now.toISOString().split('T')[0];
+        const lte = future.toISOString().split('T')[0];
+
+        const url = `/api/launches?endpoint=launch/upcoming&window_start__gte=${gte}&window_end__lte=${lte}&limit=20&mode=detailed`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`API error ${resp.status}`);
+        const data = await resp.json();
         return data.results || [];
     }
 
-    // ── Render: Empty State ──
+    // ============================================================
+    //  RENDER
+    // ============================================================
+    function render(launches) {
+        const app = document.getElementById('app');
 
-    function renderEmpty() {
-        app.innerHTML = `
-            <div class="empty-state">
-                <div class="rocket-icon">🚀</div>
-                <h2>No Launches in the Next 2 Weeks</h2>
-                <p>Check back soon — the Space Coast never stays quiet for long.</p>
-            </div>
-        `;
-    }
-
-    // ── Render: Error State ──
-
-    function renderError(msg) {
-        app.innerHTML = `
-            <div class="error-state">
-                <p>⚠️ ${msg}</p>
-                <button onclick="location.reload()">Try Again</button>
-            </div>
-        `;
-    }
-
-    // ── Render: Hero ──
-
-    function renderHero(launch) {
-        const status = getStatusInfo(launch.status);
-        const provider = getProviderName(launch);
-        const pad = getPadName(launch);
-        const missionType = getMissionType(launch);
-        const net = launch.net;
-
-        let metaHTML = '';
-        metaHTML += `<div class="hero-meta-item"><span class="label">Date:</span> ${formatDate(net)}</div>`;
-        metaHTML += `<div class="hero-meta-item"><span class="label">Time:</span> ${formatTime(net)}</div>`;
-        if (pad) {
-            metaHTML += `<div class="hero-meta-item"><span class="label">Pad:</span> ${pad}</div>`;
-        }
-        if (missionType) {
-            metaHTML += `<div class="hero-meta-item"><span class="label">Mission:</span> ${missionType}</div>`;
-        }
-
-        return `
-            <div class="hero-launch" id="hero-launch">
-                <div class="hero-label"><span class="pulse-dot"></span> Next Launch</div>
-                <h2 class="hero-mission-name">${launch.name}</h2>
-                <p class="hero-provider">${provider}</p>
-                <span class="hero-status-badge card-status-badge ${status.cls}">${status.label}</span>
-                <div class="hero-meta">${metaHTML}</div>
-                <div class="countdown-container" id="hero-countdown" data-net="${net}">
-                    <div class="countdown-unit"><div class="countdown-value" data-unit="days">--</div><div class="countdown-label">Days</div></div>
-                    <div class="countdown-separator">:</div>
-                    <div class="countdown-unit"><div class="countdown-value" data-unit="hours">--</div><div class="countdown-label">Hours</div></div>
-                    <div class="countdown-separator">:</div>
-                    <div class="countdown-unit"><div class="countdown-value" data-unit="minutes">--</div><div class="countdown-label">Min</div></div>
-                    <div class="countdown-separator">:</div>
-                    <div class="countdown-unit"><div class="countdown-value" data-unit="seconds">--</div><div class="countdown-label">Sec</div></div>
-                </div>
-            </div>
-        `;
-    }
-
-    // ── Render: Launch Card ──
-
-    function renderCard(launch, index) {
-        const status = getStatusInfo(launch.status);
-        const provider = getProviderName(launch);
-        const pad = getPadName(launch);
-        const net = launch.net;
-
-        let metaHTML = '';
-        metaHTML += `<span><span class="label">Date:</span> ${formatDate(net)}</span>`;
-        metaHTML += `<span><span class="label">Time:</span> ${formatTime(net)}</span>`;
-        if (pad) {
-            metaHTML += `<span><span class="label">Pad:</span> ${pad}</span>`;
-        }
-
-        return `
-            <div class="launch-card">
-                <div class="launch-card-top">
-                    <div class="launch-card-name">${launch.name}</div>
-                    <span class="card-status-badge ${status.cls}">${status.label}</span>
-                </div>
-                <div class="launch-card-provider">${provider}</div>
-                <div class="launch-card-meta">${metaHTML}</div>
-                <div class="launch-card-countdown" id="card-countdown-${index}" data-net="${net}"></div>
-            </div>
-        `;
-    }
-
-    // ── Render: Full Page ──
-
-    function renderLaunches(launches) {
-        if (launches.length === 0) {
-            renderEmpty();
+        if (!launches.length) {
+            app.innerHTML = `<div class="empty-state">Check back soon — the Space Coast never stays quiet for long. 🌴</div>`;
             return;
         }
 
         const hero = launches[0];
         const rest = launches.slice(1);
 
-        let html = renderHero(hero);
+        let html = buildHero(hero);
 
-        if (rest.length > 0) {
-            html += `<div class="section-header">Also Coming Up</div>`;
-            html += `<div class="launch-list">`;
-            rest.forEach((launch, i) => {
-                html += renderCard(launch, i);
-            });
-            html += `</div>`;
+        if (rest.length) {
+            html += `<div class="upcoming-header">Also Coming Up</div>`;
+            rest.forEach(l => { html += buildCard(l); });
         }
 
         app.innerHTML = html;
-        startCountdowns();
+        startCountdown(hero);
     }
 
-    // ── Countdowns ──
+    function buildHero(l) {
+        const name = l.name || 'Unknown Mission';
+        const provider = l.launch_service_provider?.name || '';
+        const pad = l.pad?.name || '';
+        const statusAbbrev = l.status?.abbrev || 'TBD';
+        const statusClass = getStatusClass(statusAbbrev);
+        const statusLabel = getStatusLabel(statusAbbrev);
+        const desc = l.mission?.description || '';
+        const floridaTime = formatFloridaTime(l.net);
+        const localTime = showLocal ? formatLocalTime(l.net) : '';
 
-    let countdownInterval = null;
+        return `
+        <div class="hero">
+            <div class="hero-label">Next Launch</div>
+            <div class="hero-mission">${name}</div>
+            ${provider ? `<div class="hero-provider">${provider}</div>` : ''}
+            ${pad ? `<div class="hero-pad">${pad}</div>` : ''}
+            <div class="hero-time">${floridaTime}</div>
+            ${localTime ? `<div class="hero-time-local">Your time: ${localTime}</div>` : ''}
+            <div><span class="hero-status ${statusClass}">${statusLabel}</span></div>
+            <div class="countdown" id="countdown">
+                <div class="countdown-unit"><div class="countdown-value" id="cd-days">--</div><div class="countdown-label">Days</div></div>
+                <div class="countdown-unit"><div class="countdown-value" id="cd-hrs">--</div><div class="countdown-label">Hours</div></div>
+                <div class="countdown-unit"><div class="countdown-value" id="cd-min">--</div><div class="countdown-label">Min</div></div>
+                <div class="countdown-unit"><div class="countdown-value" id="cd-sec">--</div><div class="countdown-label">Sec</div></div>
+            </div>
+            ${desc ? `<div class="description">${desc}</div>` : ''}
+        </div>`;
+    }
 
-    function updateCountdowns() {
-        // Hero countdown
-        const heroEl = document.getElementById('hero-countdown');
-        if (heroEl) {
-            const net = heroEl.getAttribute('data-net');
-            const diff = getTimeDiff(net);
-            if (diff) {
-                heroEl.querySelector('[data-unit="days"]').textContent = String(diff.days).padStart(2, '0');
-                heroEl.querySelector('[data-unit="hours"]').textContent = String(diff.hours).padStart(2, '0');
-                heroEl.querySelector('[data-unit="minutes"]').textContent = String(diff.minutes).padStart(2, '0');
-                heroEl.querySelector('[data-unit="seconds"]').textContent = String(diff.seconds).padStart(2, '0');
-            } else {
-                heroEl.innerHTML = '<div class="countdown-passed">T-0 has passed — waiting for status update</div>';
+    function buildCard(l) {
+        const name = l.name || 'Unknown Mission';
+        const provider = l.launch_service_provider?.name || '';
+        const pad = l.pad?.name || '';
+        const statusAbbrev = l.status?.abbrev || 'TBD';
+        const statusClass = getStatusClass(statusAbbrev);
+        const statusLabel = getStatusLabel(statusAbbrev);
+        const floridaDate = formatFloridaDateShort(l.net);
+        const localDate = showLocal ? formatLocalDateShort(l.net) : '';
+
+        return `
+        <div class="launch-card">
+            <div class="launch-info">
+                <div class="launch-mission">${name}</div>
+                ${provider ? `<div class="launch-provider">${provider}</div>` : ''}
+                ${pad ? `<div class="launch-pad">${pad}</div>` : ''}
+            </div>
+            <div class="launch-right">
+                <div class="launch-date">${floridaDate}</div>
+                ${localDate ? `<div class="launch-date-local">Your time: ${localDate}</div>` : ''}
+                <span class="launch-status ${statusClass}">${statusLabel}</span>
+            </div>
+        </div>`;
+    }
+
+    // ============================================================
+    //  COUNTDOWN
+    // ============================================================
+    function startCountdown(launch) {
+        const target = new Date(launch.net).getTime();
+
+        function tick() {
+            const now = Date.now();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                const elapsed = Math.abs(diff);
+                const elapsedMin = Math.floor(elapsed / 60000);
+                const el = document.getElementById('countdown');
+                if (el) {
+                    if (elapsedMin < 60) {
+                        el.innerHTML = `<div class="countdown-elapsed">T-0 was ${elapsedMin} minute${elapsedMin !== 1 ? 's' : ''} ago</div>`;
+                    } else {
+                        el.innerHTML = `<div class="countdown-elapsed">Launched!</div>`;
+                    }
+                }
+                return;
             }
+
+            const days = Math.floor(diff / 86400000);
+            const hrs = Math.floor((diff % 86400000) / 3600000);
+            const min = Math.floor((diff % 3600000) / 60000);
+            const sec = Math.floor((diff % 60000) / 1000);
+
+            const dEl = document.getElementById('cd-days');
+            const hEl = document.getElementById('cd-hrs');
+            const mEl = document.getElementById('cd-min');
+            const sEl = document.getElementById('cd-sec');
+            if (dEl) dEl.textContent = String(days).padStart(2, '0');
+            if (hEl) hEl.textContent = String(hrs).padStart(2, '0');
+            if (mEl) mEl.textContent = String(min).padStart(2, '0');
+            if (sEl) sEl.textContent = String(sec).padStart(2, '0');
+
+            requestAnimationFrame(tick);
         }
 
-        // Card countdowns
-        document.querySelectorAll('[id^="card-countdown-"]').forEach(el => {
-            const net = el.getAttribute('data-net');
-            const diff = getTimeDiff(net);
-            if (diff) {
-                let parts = [];
-                if (diff.days > 0) parts.push(`<span class="countdown-inline-value">${diff.days}</span>d`);
-                parts.push(`<span class="countdown-inline-value">${String(diff.hours).padStart(2, '0')}</span>h`);
-                parts.push(`<span class="countdown-inline-value">${String(diff.minutes).padStart(2, '0')}</span>m`);
-                parts.push(`<span class="countdown-inline-value">${String(diff.seconds).padStart(2, '0')}</span>s`);
-                el.innerHTML = `T-minus ${parts.join(' ')}`;
-            } else {
-                el.innerHTML = '<span style="color: var(--warning);">T-0 has passed</span>';
-            }
+        tick();
+    }
+
+    // ============================================================
+    //  INIT
+    // ============================================================
+    fetchLaunches()
+        .then(render)
+        .catch(err => {
+            console.error(err);
+            document.getElementById('app').innerHTML = `<div class="error-state">Unable to load launch data. Please try again later.</div>`;
         });
-    }
-
-    function startCountdowns() {
-        if (countdownInterval) clearInterval(countdownInterval);
-        updateCountdowns();
-        countdownInterval = setInterval(updateCountdowns, 1000);
-    }
-
-    // ── Init ──
-
-    async function init() {
-        try {
-            const launches = await fetchLaunches();
-            renderLaunches(launches);
-        } catch (err) {
-            console.error('Failed to load launches:', err);
-            renderError('Unable to load launch data. Please try again.');
-        }
-    }
-
-    init();
-})();
 </script>
 
 </body>
