@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/launches",
-      "destination": "/api/launches.js"
+      "destination": "/api/launches"
     },
     {
       "source": "/(.*)",
