@@ -4,20 +4,16 @@
     {
       "src": "api/launches.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/launches",
-      "destination": "/api/launches"
+      "src": "/api/launches",
+      "dest": "/api/launches.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
