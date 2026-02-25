@@ -10,17 +10,16 @@ export default async function handler(req, res) {
   }
 
   const { endpoint: rawEndpoint, ...queryParams } = req.query;
-
   const endpoint = decodeURIComponent(rawEndpoint || '');
 
-  const ALLOWED_ENDPOINTS = ['launch/upcoming', 'launch/previous'];
+  const ALLOWED_ENDPOINTS = ['launch/upcoming'];
 
   if (!endpoint || !ALLOWED_ENDPOINTS.includes(endpoint)) {
     return res.status(400).json({ error: 'Invalid endpoint', allowed: ALLOWED_ENDPOINTS });
   }
 
-  // Force Florida location IDs - ignore whatever the client sends
-  queryParams.location__ids = '12,27';
+  // Force Florida Space Coast location IDs
+  queryParams.location__ids = '12,27,80';
 
   try {
     const params = new URLSearchParams(queryParams);
