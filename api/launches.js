@@ -13,7 +13,10 @@ export default async function handler(req, res) {
   }
 
   // Read the endpoint from the query string
-  const { endpoint, ...queryParams } = req.query;
+  const { endpoint: rawEndpoint, ...queryParams } = req.query;
+
+  // Decode the endpoint in case it comes as launch%2Fupcoming
+  const endpoint = decodeURIComponent(rawEndpoint || '');
 
   // Whitelist: only allow specific LL2 endpoints
   const ALLOWED_ENDPOINTS = [
@@ -26,6 +29,11 @@ export default async function handler(req, res) {
       error: 'Invalid endpoint',
       allowed: ALLOWED_ENDPOINTS
     });
+  }
+
+  // Decode location__ids too, then validate
+  if (queryParams.location__ids) {
+    queryParams.location__ids = decodeURIComponent(queryParams.location__ids);
   }
 
   // Enforce Florida-only location IDs (12 = Cape Canaveral, 27 = Kennedy)
