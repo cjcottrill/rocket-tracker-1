@@ -20,15 +20,22 @@ export default async function handler(req, res) {
   }
 
   if (queryParams.location__ids) {
-    const decoded = decodeURIComponent(queryParams.location__ids);
+    const raw = queryParams.location__ids;
+    const decoded = decodeURIComponent(raw);
     const ids = decoded.split(',');
     const ALLOWED_IDS = ['12', '27'];
     const allValid = ids.every(id => ALLOWED_IDS.includes(id.trim()));
     if (!allValid) {
-      return res.status(400).json({ error: 'Invalid location filter' });
+      return res.status(400).json({ 
+        error: 'Invalid location filter',
+        debug_raw: raw,
+        debug_decoded: decoded,
+        debug_ids: ids
+      });
     }
     queryParams.location__ids = ids.join(',');
   }
+
 
   try {
     const params = new URLSearchParams(queryParams);
