@@ -37,10 +37,18 @@ export default async function handler(req, res) {
   }
 
   // Enforce Florida-only location IDs (12 = Cape Canaveral, 27 = Kennedy)
-  const ALLOWED_LOCATION_IDS = ['12', '27', '12,27', '27,12'];
-  if (queryParams.location__ids && !ALLOWED_LOCATION_IDS.includes(queryParams.location__ids)) {
-    return res.status(400).json({ error: 'Invalid location filter' });
-  }
+ // Validate location IDs - allow only Florida pads
+if (queryParams.location__ids) {
+    const ids = decodeURIComponent(queryParams.location__ids).split(',');
+    const ALLOWED_IDS = ['12', '27'];
+    const allValid = ids.every(id => ALLOWED_IDS.includes(id.trim()));
+    if (!allValid) {
+        return res.status(400).json({ error: 'Invalid location filter' });
+    }
+    // Ensure clean value is passed forward
+    queryParams.location__ids = ids.join(',');
+}
+
 
   try {
     // Build the real LL2 API URL
