@@ -1,557 +1,345 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris The Rocket Guy - Space Coast Launch Tracker</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-            background: #0a0e17;
-            color: #e0e0e0;
-            min-height: 100vh;
-        }
-
-        .header {
-            text-align: center;
-            padding: 2rem 1rem 1rem;
-            background: linear-gradient(180deg, #0d1525 0%, #0a0e17 100%);
-        }
-
-        .header h1 {
-            font-size: 1.8rem;
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-        }
-
-        .header .subtitle {
-            color: #7a8ba8;
-            font-size: 0.95rem;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        /* --- NEXT LAUNCH HERO --- */
-        .hero {
-            background: linear-gradient(135deg, #111927 0%, #0d1525 100%);
-            border: 1px solid #1e2a3a;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .hero-label {
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            color: #7a8ba8;
-            margin-bottom: 0.75rem;
-        }
-
-        .hero-mission {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-        }
-
-        .hero-provider {
-            color: #7a8ba8;
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .hero-pad {
-            color: #556b8a;
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero-time {
-            color: #c0c8d8;
-            font-size: 1rem;
-            margin-bottom: 0.15rem;
-        }
-
-        .hero-time-local {
-            color: #7a8ba8;
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero-status {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.25rem;
-        }
-
-        .status-go {
-            background: #0b3d2e;
-            color: #34d399;
-            border: 1px solid #166534;
-        }
-
-        .status-tbd {
-            background: #2d2306;
-            color: #fbbf24;
-            border: 1px solid #854d0e;
-        }
-
-        .status-tbc {
-            background: #1e2a3a;
-            color: #60a5fa;
-            border: 1px solid #1e40af;
-        }
-
-        .status-hold {
-            background: #3b1118;
-            color: #f87171;
-            border: 1px solid #991b1b;
-        }
-
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .countdown-unit {
-            background: #0a0e17;
-            border: 1px solid #1e2a3a;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            min-width: 70px;
-        }
-
-        .countdown-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #ffffff;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .countdown-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #556b8a;
-            margin-top: 0.2rem;
-        }
-
-        .countdown-elapsed {
-            color: #7a8ba8;
-            font-size: 1rem;
-            margin-top: 1rem;
-        }
-
-        /* --- UPCOMING LIST --- */
-        .upcoming-header {
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #556b8a;
-            margin-bottom: 1rem;
-        }
-
-        .launch-card {
-            background: #111927;
-            border: 1px solid #1e2a3a;
-            border-radius: 8px;
-            padding: 1.25rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .launch-info {
-            flex: 1;
-        }
-
-        .launch-mission {
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 0.2rem;
-        }
-
-        .launch-provider {
-            font-size: 0.85rem;
-            color: #7a8ba8;
-            margin-bottom: 0.15rem;
-        }
-
-        .launch-pad {
-            font-size: 0.8rem;
-            color: #556b8a;
-        }
-
-        .launch-right {
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .launch-date {
-            font-size: 0.9rem;
-            color: #c0c8d8;
-            margin-bottom: 0.15rem;
-        }
-
-        .launch-date-local {
-            font-size: 0.8rem;
-            color: #7a8ba8;
-            margin-bottom: 0.35rem;
-        }
-
-        .launch-status {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            border-radius: 999px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* --- STATES --- */
-        .loading, .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #556b8a;
-        }
-
-        .loading {
-            font-size: 1rem;
-        }
-
-        .empty-state {
-            font-size: 1.1rem;
-            font-style: italic;
-        }
-
-        .error-state {
-            text-align: center;
-            padding: 2rem 1rem;
-            color: #f87171;
-        }
-
-        .description {
-            font-size: 0.85rem;
-            color: #7a8ba8;
-            margin-top: 0.5rem;
-            line-height: 1.5;
-        }
-
-        .hero .description {
-            margin-top: 1rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                padding: 1.5rem 1rem;
-            }
-
-            .countdown {
-                gap: 0.5rem;
-            }
-
-            .countdown-unit {
-                min-width: 60px;
-                padding: 0.5rem 0.75rem;
-            }
-
-            .countdown-value {
-                font-size: 1.3rem;
-            }
-
-            .launch-card {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .launch-right {
-                text-align: left;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="header">
+<!-- Hero Section -->
+<div class="hero">
     <h1>🚀 Chris The Rocket Guy</h1>
-    <p class="subtitle">Florida Space Coast Launch Tracker</p>
+    <p class="tagline">Florida Space Coast Launch Tracker</p>
+    
+    <div class="hero-links">
+        <a href="https://www.facebook.com/people/LaunchInsight/61584464880089/" target="_blank" rel="noopener noreferrer" class="hero-link facebook">
+            <span class="hero-link-icon">📘</span>
+            LaunchInsight on Facebook
+        </a>
+    </div>
+
+    <div class="next-launch-banner" id="next-launch-banner" style="display: none;">
+        <div class="next-launch-label">Next Launch</div>
+        <div class="next-launch-name" id="next-launch-name"></div>
+        <div class="countdown" id="countdown"></div>
+    </div>
 </div>
 
-<div class="container" id="app">
-    <div class="loading">Loading launch data...</div>
+<!-- Main Content -->
+<div class="container">
+    <div class="section-header">
+        <h2>Upcoming Launches</h2>
+        <span class="launch-count" id="launch-count"></span>
+    </div>
+
+    <div id="launches-container">
+        <div class="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Fetching launch data...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="footer-links">
+        <a href="https://www.facebook.com/people/LaunchInsight/61584464880089/" target="_blank" rel="noopener noreferrer" class="footer-link">
+            📘 LaunchInsight on Facebook
+        </a>
+    </div>
+    <p>Data from <a href="https://thespacedevs.com" target="_blank" rel="noopener noreferrer">The Space Devs</a> • Built by Chris The Rocket Guy</p>
 </div>
 
 <script>
-    // ============================================================
-    //  TIMEZONE HELPERS
-    // ============================================================
-    const FLORIDA_TZ = 'America/New_York';
-
-    function userIsEastern() {
-        try {
-            const userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            // Compare actual offset right now (handles DST correctly)
-            const now = new Date();
-            const floridaOffset = getOffsetMinutes(now, FLORIDA_TZ);
-            const localOffset = getOffsetMinutes(now, userTZ);
-            return floridaOffset === localOffset;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    function getOffsetMinutes(date, tz) {
-        const str = date.toLocaleString('en-US', { timeZone: tz });
-        const localDate = new Date(str);
-        return localDate.getTime();
-    }
-
-    function formatFloridaTime(dateStr) {
-        const d = new Date(dateStr);
-        return d.toLocaleString('en-US', {
-            timeZone: FLORIDA_TZ,
+    // ── Timezone helpers ──
+    function getFloridaTime(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleString('en-US', {
+            timeZone: 'America/New_York',
             weekday: 'short',
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
-            timeZoneName: 'short'
+            hour12: true
         });
     }
 
-    function formatLocalTime(dateStr) {
-        const d = new Date(dateStr);
-        return d.toLocaleString('en-US', {
+    function getFloridaTzAbbr(dateStr) {
+        const date = new Date(dateStr);
+        const parts = date.toLocaleTimeString('en-US', {
+            timeZone: 'America/New_York',
+            timeZoneName: 'short'
+        }).split(' ');
+        return parts[parts.length - 1]; // "EST" or "EDT"
+    }
+
+    function getUserTime(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleString('en-US', {
             weekday: 'short',
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
+            hour12: true,
             timeZoneName: 'short'
         });
     }
 
-    function formatFloridaDateShort(dateStr) {
-        const d = new Date(dateStr);
-        return d.toLocaleString('en-US', {
-            timeZone: FLORIDA_TZ,
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            timeZoneName: 'short'
-        });
+    function isUserInFloridaTimezone(dateStr) {
+        const date = new Date(dateStr);
+        const floridaOffset = getTimezoneOffset(date, 'America/New_York');
+        const userOffset = date.getTimezoneOffset() * -1;
+        return floridaOffset === userOffset;
     }
 
-    function formatLocalDateShort(dateStr) {
-        const d = new Date(dateStr);
-        return d.toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            timeZoneName: 'short'
-        });
+    function getTimezoneOffset(date, tz) {
+        const utcStr = date.toLocaleString('en-US', { timeZone: 'UTC' });
+        const tzStr = date.toLocaleString('en-US', { timeZone: tz });
+        const utcDate = new Date(utcStr);
+        const tzDate = new Date(tzStr);
+        return (tzDate - utcDate) / (1000 * 60);
     }
 
-    const showLocal = !userIsEastern();
+    // ── Status badge helper ──
+    function getStatusBadge(status) {
+        if (!status) return '';
+        const abbrev = status.abbrev || '';
+        let cls = 'status-tbd';
+        if (abbrev === 'Go') cls = 'status-go';
+        else if (abbrev === 'TBC') cls = 'status-tbc';
+        else if (abbrev === 'Hold') cls = 'status-hold';
+        return `<span class="status-badge ${cls}">${abbrev || 'TBD'}</span>`;
+    }
 
-    // ============================================================
-    //  STATUS HELPERS
-    // ============================================================
-    function getStatusClass(abbrev) {
-        switch (abbrev) {
-            case 'Go': return 'status-go';
-            case 'TBD': return 'status-tbd';
-            case 'TBC': return 'status-tbc';
-            default: return 'status-hold';
+    // ── Webcast link helpers ──
+    function categorizeWebcastLink(vidUrl) {
+        const url = (vidUrl.url || '').toLowerCase();
+        const title = (vidUrl.title || '').toLowerCase();
+        const source = (vidUrl.source || '').toLowerCase();
+
+        // NASASpaceflight
+        if (url.includes('nasaspaceflight') || title.includes('nasaspaceflight') || source.includes('nasaspaceflight')) {
+            return { type: 'nsf', label: 'NASASpaceflight', priority: 1 };
         }
-    }
 
-    function getStatusLabel(abbrev) {
-        switch (abbrev) {
-            case 'Go': return 'GO';
-            case 'TBD': return 'TBD';
-            case 'TBC': return 'To Be Confirmed';
-            default: return abbrev || 'Unknown';
+        // Spaceflight Now
+        if (url.includes('spaceflightnow') || title.includes('spaceflight now') || source.includes('spaceflight now')) {
+            return { type: 'sfn', label: 'Spaceflight Now', priority: 2 };
         }
+
+        // YouTube (generic)
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            // Try to get a meaningful name
+            const label = vidUrl.title || source || 'YouTube Stream';
+            return { type: 'youtube', label: label, priority: 3 };
+        }
+
+        // Other
+        const label = vidUrl.title || vidUrl.source || 'Webcast';
+        return { type: 'other', label: label, priority: 4 };
     }
 
-    // ============================================================
-    //  FETCH
-    // ============================================================
-    async function fetchLaunches() {
+    function renderWebcastLinks(launch) {
+        const vidURLs = launch.vidURLs || [];
+        const isLive = launch.webcast_live;
+
+        if (vidURLs.length === 0 && !isLive) return '';
+
+        let categorized = vidURLs.map(v => ({
+            ...categorizeWebcastLink(v),
+            url: v.url
+        }));
+
+        // Sort: NSF first, then SFN, then YouTube, then others
+        categorized.sort((a, b) => a.priority - b.priority);
+
+        let html = '<div class="webcast-section">';
+        html += '<div class="webcast-label">Watch</div>';
+        html += '<div class="webcast-links">';
+
+        if (isLive) {
+            html += '<span class="webcast-live-indicator"><span class="webcast-live-dot"></span> LIVE NOW</span>';
+        }
+
+        categorized.forEach(link => {
+            let icon = '📺';
+            if (link.type === 'youtube') icon = '▶️';
+            if (link.type === 'nsf') icon = '🚀';
+            if (link.type === 'sfn') icon = '🛰️';
+
+            html += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="webcast-link ${link.type}">
+                <span class="webcast-link-icon">${icon}</span>
+                ${link.label}
+            </a>`;
+        });
+
+        html += '</div></div>';
+        return html;
+    }
+
+    // ── Countdown timer ──
+    let countdownInterval;
+    let nextLaunchNet;
+
+    function updateCountdown() {
+        if (!nextLaunchNet) return;
         const now = new Date();
-        const future = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
-        const gte = now.toISOString().split('T')[0];
-        const lte = future.toISOString().split('T')[0];
+        const launch = new Date(nextLaunchNet);
+        const diff = launch - now;
 
-        const url = `/api/launches?endpoint=launch/upcoming&window_start__gte=${gte}&window_end__lte=${lte}&limit=20&mode=detailed`;
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`API error ${resp.status}`);
-        const data = await resp.json();
-        return data.results || [];
-    }
-
-    // ============================================================
-    //  RENDER
-    // ============================================================
-    function render(launches) {
-        const app = document.getElementById('app');
-
-        if (!launches.length) {
-            app.innerHTML = `<div class="empty-state">Check back soon — the Space Coast never stays quiet for long. 🌴</div>`;
+        if (diff <= 0) {
+            document.getElementById('countdown').textContent = 'LIFTOFF!';
             return;
         }
 
-        const hero = launches[0];
-        const rest = launches.slice(1);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        let html = buildHero(hero);
+        let parts = [];
+        if (days > 0) parts.push(`${days}d`);
+        parts.push(`${hours}h ${minutes}m ${seconds}s`);
 
-        if (rest.length) {
-            html += `<div class="upcoming-header">Also Coming Up</div>`;
-            rest.forEach(l => { html += buildCard(l); });
+        document.getElementById('countdown').textContent = 'T- ' + parts.join(' ');
+    }
+
+    // ── Render launches ──
+    function renderLaunches(launches) {
+        const container = document.getElementById('launches-container');
+
+        if (!launches || launches.length === 0) {
+            container.innerHTML = `
+                <div class="no-launches">
+                    <div class="no-launches-icon">🌴</div>
+                    <p>No launches scheduled in the next 14 days.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.8rem;">Check back soon!</p>
+                </div>`;
+            return;
         }
 
-        app.innerHTML = html;
-        startCountdown(hero);
-    }
+        // Update count
+        document.getElementById('launch-count').textContent = `${launches.length} launch${launches.length !== 1 ? 'es' : ''}`;
 
-    function buildHero(l) {
-        const name = l.name || 'Unknown Mission';
-        const provider = l.launch_service_provider?.name || '';
-        const pad = l.pad?.name || '';
-        const statusAbbrev = l.status?.abbrev || 'TBD';
-        const statusClass = getStatusClass(statusAbbrev);
-        const statusLabel = getStatusLabel(statusAbbrev);
-        const desc = l.mission?.description || '';
-        const floridaTime = formatFloridaTime(l.net);
-        const localTime = showLocal ? formatLocalTime(l.net) : '';
+        // Set up hero countdown for first launch
+        const firstLaunch = launches[0];
+        const statusAbbrev = firstLaunch.status?.abbrev || '';
 
-        return `
-        <div class="hero">
-            <div class="hero-label">Next Launch</div>
-            <div class="hero-mission">${name}</div>
-            ${provider ? `<div class="hero-provider">${provider}</div>` : ''}
-            ${pad ? `<div class="hero-pad">${pad}</div>` : ''}
-            <div class="hero-time">${floridaTime}</div>
-            ${localTime ? `<div class="hero-time-local">Your time: ${localTime}</div>` : ''}
-            <div><span class="hero-status ${statusClass}">${statusLabel}</span></div>
-            <div class="countdown" id="countdown">
-                <div class="countdown-unit"><div class="countdown-value" id="cd-days">--</div><div class="countdown-label">Days</div></div>
-                <div class="countdown-unit"><div class="countdown-value" id="cd-hrs">--</div><div class="countdown-label">Hours</div></div>
-                <div class="countdown-unit"><div class="countdown-value" id="cd-min">--</div><div class="countdown-label">Min</div></div>
-                <div class="countdown-unit"><div class="countdown-value" id="cd-sec">--</div><div class="countdown-label">Sec</div></div>
-            </div>
-            ${desc ? `<div class="description">${desc}</div>` : ''}
-        </div>`;
-    }
+        document.getElementById('next-launch-banner').style.display = 'block';
+        document.getElementById('next-launch-name').textContent = firstLaunch.name;
 
-    function buildCard(l) {
-        const name = l.name || 'Unknown Mission';
-        const provider = l.launch_service_provider?.name || '';
-        const pad = l.pad?.name || '';
-        const statusAbbrev = l.status?.abbrev || 'TBD';
-        const statusClass = getStatusClass(statusAbbrev);
-        const statusLabel = getStatusLabel(statusAbbrev);
-        const floridaDate = formatFloridaDateShort(l.net);
-        const localDate = showLocal ? formatLocalDateShort(l.net) : '';
+        if (statusAbbrev === 'TBD') {
+            document.getElementById('countdown').innerHTML = '<span class="countdown-tbd">Date/Time TBD</span>';
+        } else {
+            nextLaunchNet = firstLaunch.net;
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
 
-        return `
-        <div class="launch-card">
-            <div class="launch-info">
-                <div class="launch-mission">${name}</div>
-                ${provider ? `<div class="launch-provider">${provider}</div>` : ''}
-                ${pad ? `<div class="launch-pad">${pad}</div>` : ''}
-            </div>
-            <div class="launch-right">
-                <div class="launch-date">${floridaDate}</div>
-                ${localDate ? `<div class="launch-date-local">Your time: ${localDate}</div>` : ''}
-                <span class="launch-status ${statusClass}">${statusLabel}</span>
-            </div>
-        </div>`;
-    }
+        // Build launch cards
+        let html = '';
+        launches.forEach(launch => {
+            const provider = launch.launch_service_provider?.name || 'Unknown Provider';
+            const rocketName = launch.rocket?.configuration?.full_name || launch.rocket?.configuration?.name || 'Unknown Rocket';
+            const missionType = launch.mission?.type || '—';
+            const orbit = launch.mission?.orbit?.name || '—';
+            const pad = launch.pad?.name || '—';
+            const missionDesc = launch.mission?.description || '';
+            const floridaTime = getFloridaTime(launch.net);
+            const floridaTz = getFloridaTzAbbr(launch.net);
+            const statusBadge = getStatusBadge(launch.status);
+            const isTimeTBD = (launch.status?.abbrev === 'TBD');
+            const webcastHtml = renderWebcastLinks(launch);
 
-    // ============================================================
-    //  COUNTDOWN
-    // ============================================================
-    function startCountdown(launch) {
-        const target = new Date(launch.net).getTime();
+            let timeHtml = '';
+            if (isTimeTBD) {
+                const dateOnly = new Date(launch.net).toLocaleDateString('en-US', {
+                    timeZone: 'America/New_York',
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                timeHtml = `
+                    <div class="florida-time">${dateOnly} (Time TBD)</div>
+                    <div class="florida-label">Florida Time</div>`;
+            } else {
+                timeHtml = `
+                    <div class="florida-time">${floridaTime} ${floridaTz}</div>
+                    <div class="florida-label">Florida Time</div>`;
 
-        function tick() {
-            const now = Date.now();
-            const diff = target - now;
-
-            if (diff <= 0) {
-                const elapsed = Math.abs(diff);
-                const elapsedMin = Math.floor(elapsed / 60000);
-                const el = document.getElementById('countdown');
-                if (el) {
-                    if (elapsedMin < 60) {
-                        el.innerHTML = `<div class="countdown-elapsed">T-0 was ${elapsedMin} minute${elapsedMin !== 1 ? 's' : ''} ago</div>`;
-                    } else {
-                        el.innerHTML = `<div class="countdown-elapsed">Launched!</div>`;
-                    }
+                if (!isUserInFloridaTimezone(launch.net)) {
+                    const userTime = getUserTime(launch.net);
+                    timeHtml += `<div class="user-time">Your time: ${userTime}</div>`;
                 }
-                return;
             }
 
-            const days = Math.floor(diff / 86400000);
-            const hrs = Math.floor((diff % 86400000) / 3600000);
-            const min = Math.floor((diff % 3600000) / 60000);
-            const sec = Math.floor((diff % 60000) / 1000);
+            html += `
+                <div class="launch-card">
+                    <div class="launch-card-header">
+                        <div>
+                            <div class="launch-provider">${provider}</div>
+                            <div class="launch-name">${launch.name}</div>
+                        </div>
+                        ${statusBadge}
+                    </div>
 
-            const dEl = document.getElementById('cd-days');
-            const hEl = document.getElementById('cd-hrs');
-            const mEl = document.getElementById('cd-min');
-            const sEl = document.getElementById('cd-sec');
-            if (dEl) dEl.textContent = String(days).padStart(2, '0');
-            if (hEl) hEl.textContent = String(hrs).padStart(2, '0');
-            if (mEl) mEl.textContent = String(min).padStart(2, '0');
-            if (sEl) sEl.textContent = String(sec).padStart(2, '0');
+                    <div class="launch-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Rocket</span>
+                            <span class="detail-value">${rocketName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Pad</span>
+                            <span class="detail-value">${pad}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Mission Type</span>
+                            <span class="detail-value">${missionType}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Orbit</span>
+                            <span class="detail-value">${orbit}</span>
+                        </div>
+                    </div>
 
-            requestAnimationFrame(tick);
-        }
+                    <div class="launch-time-section">
+                        ${timeHtml}
+                    </div>
 
-        tick();
+                    ${webcastHtml}
+
+                    ${missionDesc ? `<div class="mission-desc">${missionDesc}</div>` : ''}
+                </div>`;
+        });
+
+        container.innerHTML = html;
     }
 
-    // ============================================================
-    //  INIT
-    // ============================================================
-    fetchLaunches()
-        .then(render)
-        .catch(err => {
-            console.error(err);
-            document.getElementById('app').innerHTML = `<div class="error-state">Unable to load launch data. Please try again later.</div>`;
-        });
-</script>
+    // ── Fetch launches ──
+    async function fetchLaunches() {
+        try {
+            const response = await fetch('/api/launches');
 
-</body>
-</html>
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            renderLaunches(data.results);
+
+        } catch (error) {
+            console.error('Failed to fetch launches:', error);
+            document.getElementById('launches-container').innerHTML = `
+                <div class="error-state">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-message">Unable to load launch data</div>
+                    <div class="error-hint">${error.message || 'Please try again later'}</div>
+                </div>`;
+        }
+    }
+
+    // ── Init ──
+    fetchLaunches();
+
+    // Refresh every 5 minutes
+    setInterval(fetchLaunches, 5 * 60 * 1000);
+</script>
