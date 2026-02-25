@@ -44,22 +44,6 @@
             margin-top: 5px;
         }
 
-        .social-links {
-            margin-top: 8px;
-        }
-
-        .social-links a {
-            color: #ff6b35;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 0.85em;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: #ffd700;
-        }
-
         /* Countdown Banner */
         .countdown-banner {
             background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
@@ -113,58 +97,6 @@
             font-size: 0.75em;
             color: #aab;
             text-transform: uppercase;
-        }
-
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px;
-            flex-wrap: wrap;
-        }
-
-        .nav-tab {
-            padding: 10px 25px;
-            border: 2px solid #ff6b35;
-            background: transparent;
-            color: #ff6b35;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.95em;
-            transition: all 0.3s;
-        }
-
-        .nav-tab:hover, .nav-tab.active {
-            background: #ff6b35;
-            color: white;
-        }
-
-        /* Search Bar */
-        .search-container {
-            max-width: 600px;
-            margin: 10px auto;
-            padding: 0 20px;
-        }
-
-        .search-container input {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: 25px;
-            border: 2px solid #333;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 1em;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .search-container input:focus {
-            border-color: #ff6b35;
-        }
-
-        .search-container input::placeholder {
-            color: #666;
         }
 
         /* Main Content */
@@ -302,72 +234,6 @@
             transform: translateY(-1px);
         }
 
-        /* News Card */
-        .news-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .news-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
-        }
-
-        .news-card-inner {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .news-image {
-            width: 250px;
-            min-height: 180px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .news-details {
-            padding: 20px;
-            flex: 1;
-        }
-
-        .news-title {
-            font-size: 1.2em;
-            color: #ffd700;
-            margin-bottom: 8px;
-        }
-
-        .news-source {
-            color: #ff6b35;
-            font-size: 0.85em;
-            margin-bottom: 8px;
-        }
-
-        .news-summary {
-            color: #ccd;
-            font-size: 0.9em;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-
-        .news-link {
-            display: inline-block;
-            padding: 6px 15px;
-            background: #ff6b35;
-            color: white;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.85em;
-            transition: all 0.3s;
-        }
-
-        .news-link:hover {
-            background: #ff8c42;
-        }
-
         /* Pagination */
         .pagination {
             display: flex;
@@ -427,25 +293,45 @@
         /* Footer */
         .footer {
             text-align: center;
-            padding: 30px;
-            color: #666;
-            font-size: 0.8em;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
             margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer h3 {
+            color: #ff6b35;
+            margin-bottom: 15px;
         }
 
         .footer a {
-            color: #ff6b35;
+            color: #ff8c42;
             text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #ffd700;
+        }
+
+        .footer .credit {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .footer .credit a {
+            font-size: 1em;
+            color: #ff6b35;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .launch-card-inner, .news-card-inner {
+            .launch-card-inner {
                 flex-direction: column;
             }
 
-            .launch-image, .news-image {
+            .launch-image {
                 width: 100%;
                 height: 200px;
             }
@@ -464,24 +350,12 @@
     <header class="header">
         <h1>🚀 Chris The Rocket Guy</h1>
         <p>Your guide to Florida Space Coast launches</p>
-        <div class="social-links">
-        </div>
     </header>
 
     <div class="countdown-banner" id="countdownBanner">
         <h2>🔥 NEXT LAUNCH</h2>
         <div class="mission-name" id="nextMissionName"></div>
         <div class="countdown-timer" id="countdownTimer"></div>
-    </div>
-
-    <nav class="nav-tabs">
-        <button class="nav-tab active" onclick="switchTab('upcoming')">🚀 Upcoming</button>
-        <button class="nav-tab" onclick="switchTab('previous')">📜 Previous</button>
-        <button class="nav-tab" onclick="switchTab('news')">📰 Space News</button>
-    </nav>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search launches by name, provider, rocket..." oninput="handleSearchInput()">
     </div>
 
     <main class="main-content" id="mainContent">
@@ -498,8 +372,17 @@
     </div>
 
     <footer class="footer">
-        <p>Data provided by <a href="https://thespacedevs.com/" target="_blank">The Space Devs</a> & <a href="https://spaceflightnewsapi.net/" target="_blank">Spaceflight News API</a></p>
-        <p style="margin-top: 5px;">Built with 🧡 by Chris The Rocket Guy</p>
+        <h3>📬 Contact Chris The Rocket Guy</h3>
+        <p style="margin: 10px 0;">
+            <a href="mailto:cjcottrill@gmail.com">✉️ cjcottrill@gmail.com</a>
+        </p>
+        <p style="margin: 10px 0;">
+            <a href="https://www.facebook.com/profile.php?id=61584464880089" target="_blank" rel="noopener noreferrer">📘 Follow on Facebook</a>
+        </p>
+        <div class="credit">
+            <p>Data provided by <a href="https://thespacedevs.com/" target="_blank">The Space Devs</a> & <a href="https://spaceflightnewsapi.net/" target="_blank">Spaceflight News API</a></p>
+            <p style="margin-top: 5px;">© 2025 Chris The Rocket Guy 🚀</p>
+        </div>
     </footer>
 
     <script>
@@ -507,14 +390,8 @@
         // CONFIGURATION
         // ============================================================
 
-        // FIX #1: API token is now hidden on the server.
-        // Launches go through our Vercel proxy; news API is free/public.
         const PROXY_BASE = '/api/launches';
-        const NEWS_API = 'https://api.spaceflightnewsapi.net/v4';
-
         const RESULTS_PER_PAGE = 10;
-
-        // Florida Space Coast location IDs
         const FLORIDA_LOCATION_IDS = '12,27';
 
         // ============================================================
@@ -522,45 +399,34 @@
         // ============================================================
 
         const state = {
-            currentTab: 'upcoming',
             currentPage: 1,
             launches: [],
             totalResults: 0,
             nextUrl: null,
             previousUrl: null,
-            searchQuery: '',
-            countdownInterval: null,
-            searchDebounceTimer: null   // FIX #5: debounce search
+            countdownInterval: null
         };
 
         // ============================================================
-        // FIX #2: localStorage CACHE (persists across refreshes)
+        // CACHE
         // ============================================================
 
-        const CACHE_DURATION = {
-            upcoming: 5 * 60 * 1000,   // 5 min
-            previous: 30 * 60 * 1000,  // 30 min
-            news: 15 * 60 * 1000       // 15 min
-        };
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 min
 
-        function getCacheKey(tab, page) {
-            return `crg_${tab}_page${page}`;
+        function getCacheKey(page) {
+            return `crg_upcoming_page${page}`;
         }
 
-        function getCachedData(key, tab) {
+        function getCachedData(key) {
             try {
                 const raw = localStorage.getItem(key);
                 if (!raw) return null;
-
                 const cached = JSON.parse(raw);
-                const age = Date.now() - cached.timestamp;
-
-                if (age > (CACHE_DURATION[tab] || 300000)) {
+                if (Date.now() - cached.timestamp > CACHE_DURATION) {
                     localStorage.removeItem(key);
                     return null;
                 }
-
-                console.log(`📦 Cache hit: ${key} (${Math.round(age / 1000)}s old)`);
+                console.log(`📦 Cache hit: ${key}`);
                 return cached.data;
             } catch (e) {
                 return null;
@@ -574,32 +440,19 @@
                     data: data
                 }));
             } catch (e) {
-                // localStorage full — clear old entries and try once more
                 clearOldCache();
-                try {
-                    localStorage.setItem(key, JSON.stringify({
-                        timestamp: Date.now(),
-                        data: data
-                    }));
-                } catch (e2) {
-                    console.warn('Cache write failed:', e2);
-                }
             }
         }
 
         function clearOldCache() {
-            const keysToRemove = [];
-            for (let i = 0; i < localStorage.length; i++) {
+            for (let i = localStorage.length - 1; i >= 0; i--) {
                 const key = localStorage.key(i);
-                if (key && key.startsWith('crg_')) {
-                    keysToRemove.push(key);
-                }
+                if (key && key.startsWith('crg_')) localStorage.removeItem(key);
             }
-            keysToRemove.forEach(k => localStorage.removeItem(k));
         }
 
         // ============================================================
-        // FIX #3: XSS protection — escape any API text before rendering
+        // XSS PROTECTION
         // ============================================================
 
         function escapeHtml(str) {
@@ -610,7 +463,7 @@
         }
 
         // ============================================================
-        // FIX #4: Reliable fallback image
+        // FALLBACK IMAGE
         // ============================================================
 
         const FALLBACK_IMAGE = 'data:image/svg+xml,' + encodeURIComponent(`
@@ -622,76 +475,28 @@
         `);
 
         // ============================================================
-        // TAB SWITCHING
-        // ============================================================
-
-        function switchTab(tab) {
-            state.currentTab = tab;
-            state.currentPage = 1;
-            state.searchQuery = '';
-            document.getElementById('searchInput').value = '';
-
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // FIX #6: Clear countdown when leaving the upcoming tab
-            if (tab !== 'upcoming' && state.countdownInterval) {
-                clearInterval(state.countdownInterval);
-                state.countdownInterval = null;
-                document.getElementById('countdownBanner').classList.remove('active');
-            }
-
-            if (tab === 'news') {
-                loadNews();
-            } else {
-                loadLaunches();
-            }
-        }
-
-        // ============================================================
-        // FIX #5: DEBOUNCED SEARCH (300ms delay)
-        // ============================================================
-
-        function handleSearchInput() {
-            clearTimeout(state.searchDebounceTimer);
-            state.searchDebounceTimer = setTimeout(() => {
-                state.searchQuery = document.getElementById('searchInput').value.toLowerCase();
-                if (state.currentTab === 'news') {
-                    state.currentPage = 1;
-                    loadNews();
-                } else {
-                    applyFilters();
-                }
-            }, 300);
-        }
-
-        // ============================================================
-        // LOAD LAUNCHES (via Vercel proxy — token never leaves server)
+        // LOAD LAUNCHES
         // ============================================================
 
         async function loadLaunches() {
             const content = document.getElementById('mainContent');
             const pagination = document.getElementById('pagination');
 
-            // Check cache first
-            const cacheKey = getCacheKey(state.currentTab, state.currentPage);
-            const cachedData = getCachedData(cacheKey, state.currentTab);
+            const cacheKey = getCacheKey(state.currentPage);
+            const cachedData = getCachedData(cacheKey);
 
             if (cachedData) {
                 state.launches = cachedData.results || [];
                 state.totalResults = cachedData.count || 0;
                 state.nextUrl = cachedData.next;
                 state.previousUrl = cachedData.previous;
-
-                if (state.currentTab === 'upcoming' && state.currentPage === 1 && state.launches.length > 0) {
+                if (state.currentPage === 1 && state.launches.length > 0) {
                     setupCountdown(state.launches[0]);
                 }
-
-                applyFilters();
+                renderLaunches(state.launches);
                 return;
             }
 
-            // Show loading
             content.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
@@ -702,48 +507,32 @@
 
             try {
                 const offset = (state.currentPage - 1) * RESULTS_PER_PAGE;
-
-                const endpoint = state.currentTab === 'upcoming'
-                    ? 'launch/upcoming'
-                    : 'launch/previous';
-
                 const params = new URLSearchParams({
-                    endpoint: endpoint,
+                    endpoint: 'launch/upcoming',
                     limit: RESULTS_PER_PAGE,
                     offset: offset,
                     mode: 'detailed',
                     location__ids: FLORIDA_LOCATION_IDS
                 });
 
-                console.log(`🌐 Fetching: ${PROXY_BASE}?${params}`);
-
                 const response = await fetch(`${PROXY_BASE}?${params}`);
 
-                // FIX #7: Handle rate limiting (HTTP 429)
                 if (response.status === 429) {
                     const errorData = await response.json().catch(() => ({}));
                     const waitSeconds = parseInt(errorData.retryAfter) || 60;
-
                     content.innerHTML = `
                         <div class="loading">
                             <h2 style="color: #ff6b35;">⏱️ Rate Limit Reached</h2>
-                            <p>The API is temporarily limiting requests.</p>
-                            <p style="color: #ff6b35; font-size: 1.3em; margin-top: 15px;">
-                                Retrying in <span id="rateLimitCountdown">${waitSeconds}</span> seconds...
-                            </p>
+                            <p>Retrying in <span id="rateLimitCountdown">${waitSeconds}</span> seconds...</p>
                         </div>
                     `;
                     startRetryCountdown(waitSeconds, loadLaunches);
                     return;
                 }
 
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`Server returned ${response.status}`);
 
                 const data = await response.json();
-
-                // Cache the successful response
                 setCachedData(cacheKey, data);
 
                 state.launches = data.results || [];
@@ -751,11 +540,11 @@
                 state.nextUrl = data.next;
                 state.previousUrl = data.previous;
 
-                if (state.currentTab === 'upcoming' && state.currentPage === 1 && state.launches.length > 0) {
+                if (state.currentPage === 1 && state.launches.length > 0) {
                     setupCountdown(state.launches[0]);
                 }
 
-                applyFilters();
+                renderLaunches(state.launches);
 
             } catch (error) {
                 console.error('Error loading launches:', error);
@@ -771,10 +560,6 @@
             }
         }
 
-        // ============================================================
-        // RATE LIMIT RETRY COUNTDOWN
-        // ============================================================
-
         function startRetryCountdown(seconds, retryFn) {
             let remaining = seconds;
             const interval = setInterval(() => {
@@ -789,142 +574,14 @@
         }
 
         // ============================================================
-        // LOAD NEWS (public API — no token needed)
+        // RENDER LAUNCHES
         // ============================================================
-
-        async function loadNews() {
-            const content = document.getElementById('mainContent');
-            const pagination = document.getElementById('pagination');
-
-            document.getElementById('countdownBanner').classList.remove('active');
-
-            // Check cache
-            const cacheKey = getCacheKey('news', state.currentPage);
-            const cachedData = getCachedData(cacheKey, 'news');
-
-            if (cachedData && !state.searchQuery) {
-                renderNews(cachedData);
-                return;
-            }
-
-            content.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Fetching space news...</p>
-                </div>
-            `;
-            pagination.style.display = 'none';
-
-            try {
-                const offset = (state.currentPage - 1) * RESULTS_PER_PAGE;
-                let url = `${NEWS_API}/articles/?limit=${RESULTS_PER_PAGE}&offset=${offset}`;
-
-                if (state.searchQuery) {
-                    url += `&search=${encodeURIComponent(state.searchQuery)}`;
-                }
-
-                const response = await fetch(url);
-
-                if (response.status === 429) {
-                    const waitSeconds = 30;
-                    content.innerHTML = `
-                        <div class="loading">
-                            <h2 style="color: #ff6b35;">⏱️ Rate Limit Reached</h2>
-                            <p>Retrying in <span id="rateLimitCountdown">${waitSeconds}</span> seconds...</p>
-                        </div>
-                    `;
-                    startRetryCountdown(waitSeconds, loadNews);
-                    return;
-                }
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-                const data = await response.json();
-
-                if (!state.searchQuery) {
-                    setCachedData(cacheKey, data);
-                }
-
-                renderNews(data);
-
-            } catch (error) {
-                console.error('Error loading news:', error);
-                content.innerHTML = `
-                    <div class="loading">
-                        <h2>😞 Couldn't load news</h2>
-                        <p style="color: #aab;">${escapeHtml(error.message)}</p>
-                        <button onclick="loadNews()" style="background: #ff6b35; color: white; border: none; padding: 10px 25px; border-radius: 25px; cursor: pointer; font-size: 1em; margin-top: 10px;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function renderNews(data) {
-            const content = document.getElementById('mainContent');
-            const pagination = document.getElementById('pagination');
-
-            const articles = data.results || [];
-            state.totalResults = data.count || 0;
-
-            if (articles.length === 0) {
-                content.innerHTML = '<div class="loading"><p>No news articles found.</p></div>';
-                pagination.style.display = 'none';
-                return;
-            }
-
-            content.innerHTML = articles.map(article => `
-                <article class="news-card">
-                    <div class="news-card-inner">
-                        <img class="news-image"
-                             src="${escapeHtml(article.image_url) || FALLBACK_IMAGE}"
-                             alt="${escapeHtml(article.title)}"
-                             onerror="this.src='${FALLBACK_IMAGE}'"
-                             loading="lazy">
-                        <div class="news-details">
-                            <h3 class="news-title">${escapeHtml(article.title)}</h3>
-                            <p class="news-source">📰 ${escapeHtml(article.news_site)} • ${formatDate(article.published_at)}</p>
-                            <p class="news-summary">${escapeHtml(article.summary)}</p>
-                            <a href="${escapeHtml(article.url)}" target="_blank" rel="noopener noreferrer" class="news-link">Read Full Article →</a>
-                        </div>
-                    </div>
-                </article>
-            `).join('');
-
-            updatePagination();
-        }
-
-        // ============================================================
-        // FILTER & RENDER LAUNCHES
-        // ============================================================
-
-        function applyFilters() {
-            let filtered = [...state.launches];
-
-            if (state.searchQuery) {
-                filtered = filtered.filter(launch => {
-                    const name = (launch.name || '').toLowerCase();
-                    const provider = (launch.launch_service_provider?.name || '').toLowerCase();
-                    const rocket = (launch.rocket?.configuration?.name || '').toLowerCase();
-                    const mission = (launch.mission?.name || '').toLowerCase();
-                    const q = state.searchQuery;
-                    return name.includes(q) || provider.includes(q) || rocket.includes(q) || mission.includes(q);
-                });
-            }
-
-            renderLaunches(filtered);
-        }
 
         function renderLaunches(launches) {
             const content = document.getElementById('mainContent');
 
             if (launches.length === 0) {
-                content.innerHTML = `
-                    <div class="loading">
-                        <p>No launches found${state.searchQuery ? ' matching "' + escapeHtml(state.searchQuery) + '"' : ''}.</p>
-                    </div>
-                `;
+                content.innerHTML = '<div class="loading"><p>No upcoming launches found.</p></div>';
                 document.getElementById('pagination').style.display = 'none';
                 return;
             }
@@ -990,30 +647,16 @@
         // ============================================================
 
         function getStatusClass(id) {
-            const map = {
-                1: 'status-go',
-                2: 'status-tbd',
-                3: 'status-success',
-                4: 'status-failure',
-                5: 'status-hold',
-                6: 'status-infly',
-                8: 'status-tbd'
-            };
+            const map = { 1: 'status-go', 2: 'status-tbd', 3: 'status-success', 4: 'status-failure', 5: 'status-hold', 6: 'status-infly', 8: 'status-tbd' };
             return map[id] || 'status-fetching';
         }
 
         function formatDate(dateStr) {
             if (!dateStr) return 'Date TBD';
             try {
-                const date = new Date(dateStr);
-                return date.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZoneName: 'short'
+                return new Date(dateStr).toLocaleDateString('en-US', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
                 });
             } catch (e) {
                 return 'Date TBD';
@@ -1025,7 +668,6 @@
         // ============================================================
 
         function setupCountdown(launch) {
-            // Clear any existing countdown
             if (state.countdownInterval) {
                 clearInterval(state.countdownInterval);
                 state.countdownInterval = null;
@@ -1044,21 +686,17 @@
             nameEl.textContent = launch.name || 'Upcoming Mission';
 
             function updateTimer() {
-                const now = Date.now();
-                const diff = launchTime - now;
-
+                const diff = launchTime - Date.now();
                 if (diff <= 0) {
                     timerEl.innerHTML = '<div class="countdown-unit"><span class="number">🚀</span><span class="label">Launched!</span></div>';
                     clearInterval(state.countdownInterval);
                     state.countdownInterval = null;
                     return;
                 }
-
                 const days = Math.floor(diff / 86400000);
                 const hours = Math.floor((diff % 86400000) / 3600000);
                 const minutes = Math.floor((diff % 3600000) / 60000);
                 const seconds = Math.floor((diff % 60000) / 1000);
-
                 timerEl.innerHTML = `
                     <div class="countdown-unit"><span class="number">${days}</span><span class="label">Days</span></div>
                     <div class="countdown-unit"><span class="number">${hours}</span><span class="label">Hours</span></div>
@@ -1072,18 +710,14 @@
             banner.classList.add('active');
         }
 
-        // FIX #6: Pause countdown when tab is not visible
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 if (state.countdownInterval) {
                     clearInterval(state.countdownInterval);
                     state.countdownInterval = null;
                 }
-            } else {
-                // Restart countdown if on the upcoming tab
-                if (state.currentTab === 'upcoming' && state.launches.length > 0) {
-                    setupCountdown(state.launches[0]);
-                }
+            } else if (state.launches.length > 0) {
+                setupCountdown(state.launches[0]);
             }
         });
 
@@ -1093,41 +727,27 @@
 
         function updatePagination() {
             const pagination = document.getElementById('pagination');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const pageInfo = document.getElementById('pageInfo');
-
             const totalPages = Math.ceil(state.totalResults / RESULTS_PER_PAGE);
-
             if (totalPages <= 1) {
                 pagination.style.display = 'none';
                 return;
             }
-
             pagination.style.display = 'flex';
-            prevBtn.disabled = state.currentPage <= 1;
-            nextBtn.disabled = state.currentPage >= totalPages;
-            pageInfo.textContent = `Page ${state.currentPage} of ${totalPages} (${state.totalResults} results)`;
+            document.getElementById('prevBtn').disabled = state.currentPage <= 1;
+            document.getElementById('nextBtn').disabled = state.currentPage >= totalPages;
+            document.getElementById('pageInfo').textContent = `Page ${state.currentPage} of ${totalPages} (${state.totalResults} results)`;
         }
 
         function nextPage() {
             state.currentPage++;
-            if (state.currentTab === 'news') {
-                loadNews();
-            } else {
-                loadLaunches();
-            }
+            loadLaunches();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function prevPage() {
             if (state.currentPage > 1) {
                 state.currentPage--;
-                if (state.currentTab === 'news') {
-                    loadNews();
-                } else {
-                    loadLaunches();
-                }
+                loadLaunches();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
@@ -1140,21 +760,5 @@
             loadLaunches();
         });
     </script>
-    <footer style="text-align: center; padding: 30px 20px; margin-top: 40px; border-top: 2px solid #e0e0e0; color: #555;">
-  <h3 style="margin-bottom: 15px; color: #333;">📬 Contact Chris The Rocket Guy</h3>
-  <p style="margin: 10px 0;">
-    <a href="mailto:cjcottrill@gmail.com" style="color: #1a73e8; text-decoration: none; font-size: 18px;">
-      ✉️ cjcottrill@gmail.com
-    </a>
-  </p>
-  <p style="margin: 10px 0;">
-    <a href="https://www.facebook.com/profile.php?id=61584464880089" target="_blank" rel="noopener noreferrer" style="color: #1a73e8; text-decoration: none; font-size: 18px;">
-      📘 Follow on Facebook
-    </a>
-  </p>
-  <p style="margin-top: 20px; font-size: 14px; color: #999;">
-    © 2025 Chris The Rocket Guy 🚀
-  </p>
-</footer>
 </body>
 </html>
