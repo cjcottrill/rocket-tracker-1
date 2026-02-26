@@ -373,7 +373,7 @@
 
         async function fetchLaunches() {
             try {
-                const response = await fetch('/api/launches');
+                const response = await fetch('/api/launches?endpoint=launch/upcoming');
                 if (!response.ok) throw new Error('Failed to fetch launches');
                 const data = await response.json();
                 allLaunches = data.results || [];
