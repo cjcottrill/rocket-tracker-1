@@ -261,6 +261,113 @@
             border: 1px solid #9e9e9e;
         }
 
+        /* ===== LIVESTREAM STYLES ===== */
+        .livestream-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .livestream-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .livestream-label .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #f44336;
+            border-radius: 50%;
+            display: inline-block;
+            animation: livePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(244, 67, 54, 0); }
+        }
+
+        .livestream-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stream-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.15s, filter 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .stream-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.15);
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .stream-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* YouTube */
+        .stream-btn-youtube {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff0000;
+            color: #ff4444;
+        }
+
+        /* NSF / NASASpaceflight */
+        .stream-btn-nsf {
+            background: rgba(0, 150, 255, 0.15);
+            border-color: #0096ff;
+            color: #4db8ff;
+        }
+
+        /* SpaceflightNow */
+        .stream-btn-sfn {
+            background: rgba(255, 165, 0, 0.15);
+            border-color: #ffa500;
+            color: #ffbf4d;
+        }
+
+        /* SpaceX */
+        .stream-btn-spacex {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #e0e0e0;
+        }
+
+        /* Generic / other */
+        .stream-btn-generic {
+            background: rgba(158, 158, 158, 0.15);
+            border-color: rgba(158, 158, 158, 0.5);
+            color: #bbb;
+        }
+
+        .no-streams {
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+        }
+        /* ===== END LIVESTREAM STYLES ===== */
+
         .pagination {
             display: flex;
             justify-content: center;
@@ -407,6 +514,14 @@
                 font-size: 1rem;
                 padding: 12px 50px 12px 16px;
             }
+
+            .livestream-links {
+                flex-direction: column;
+            }
+
+            .stream-btn {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -481,6 +596,77 @@
         const perPage = 5;
         let countdownInterval = null;
 
+        // SVG icons for stream buttons
+        const ICONS = {
+            youtube: '<svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+            play: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+            link: '<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>'
+        };
+
+        // Classify a video URL into a known source
+        function classifyStream(url, title) {
+            const u = (url || '').toLowerCase();
+            const t = (title || '').toLowerCase();
+
+            if (u.includes('nasaspaceflight.com')) {
+                return { source: 'NASASpaceflight', cls: 'stream-btn-nsf', icon: ICONS.play };
+            }
+            if (u.includes('spaceflightnow.com')) {
+                return { source: 'Spaceflight Now', cls: 'stream-btn-sfn', icon: ICONS.play };
+            }
+            if (u.includes('youtube.com') || u.includes('youtu.be')) {
+                // Try to get a nicer label from the title
+                if (t.includes('spacex')) return { source: 'SpaceX Stream', cls: 'stream-btn-spacex', icon: ICONS.youtube };
+                if (t.includes('nasa')) return { source: 'NASA Stream', cls: 'stream-btn-youtube', icon: ICONS.youtube };
+                if (t.includes('nasaspaceflight') || t.includes('nsf')) return { source: 'NASASpaceflight', cls: 'stream-btn-nsf', icon: ICONS.youtube };
+                if (t.includes('spaceflight now')) return { source: 'Spaceflight Now', cls: 'stream-btn-sfn', icon: ICONS.youtube };
+                return { source: title || 'YouTube Stream', cls: 'stream-btn-youtube', icon: ICONS.youtube };
+            }
+            if (u.includes('spacex.com')) {
+                return { source: 'SpaceX Webcast', cls: 'stream-btn-spacex', icon: ICONS.play };
+            }
+
+            return { source: title || 'Watch Live', cls: 'stream-btn-generic', icon: ICONS.link };
+        }
+
+        function buildStreamHTML(vidURLs) {
+            // vidURLs is an array of objects: { priority, title, description, feature_image, url, type, language, ... }
+            if (!vidURLs || vidURLs.length === 0) {
+                return `
+                    <div class="livestream-section">
+                        <div class="livestream-label">📺 Livestreams</div>
+                        <div class="no-streams">No streams available yet — check back closer to launch</div>
+                    </div>
+                `;
+            }
+
+            // Deduplicate by URL
+            const seen = new Set();
+            const unique = vidURLs.filter(v => {
+                if (seen.has(v.url)) return false;
+                seen.add(v.url);
+                return true;
+            });
+
+            // Sort: lower priority number = higher importance
+            unique.sort((a, b) => (a.priority || 99) - (b.priority || 99));
+
+            let buttons = '';
+            unique.forEach(v => {
+                const info = classifyStream(v.url, v.title);
+                const safeUrl = v.url.replace(/"/g, '&quot;');
+                const safeTitle = (v.title || info.source).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                buttons += `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="stream-btn ${info.cls}" title="${safeTitle}">${info.icon}<span>${info.source}</span></a>`;
+            });
+
+            return `
+                <div class="livestream-section">
+                    <div class="livestream-label"><span class="live-dot"></span> Livestreams</div>
+                    <div class="livestream-links">${buttons}</div>
+                </div>
+            `;
+        }
+
         async function fetchLaunches() {
             try {
                 const response = await fetch('/api/launches?endpoint=launch/upcoming');
@@ -516,6 +702,9 @@
                 const missionDesc = launch.mission?.description || 'No mission description available.';
                 const missionType = launch.mission?.type || 'N/A';
 
+                // Build livestream section from vidURLs
+                const streamHTML = buildStreamHTML(launch.vidURLs);
+
                 html += `
                     <div class="launch-card">
                         <h3>${launch.name || 'Unknown Launch'}</h3>
@@ -543,6 +732,7 @@
                             <span class="detail-label">Description:</span>
                             <span>${missionDesc}</span>
                         </div>
+                        ${streamHTML}
                     </div>
                 `;
             });
