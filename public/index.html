@@ -18,6 +18,104 @@
             min-height: 100vh;
         }
 
+        /* ===== RESORT GUEST BANNER ===== */
+        .resort-banner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 50%, #ff6b35 100%);
+            background-size: 200% 200%;
+            animation: bannerShimmer 3s ease-in-out infinite;
+            padding: 14px 20px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 1.15rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: filter 0.2s;
+        }
+
+        .resort-banner:hover {
+            filter: brightness(1.1);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .resort-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            animation: bannerSweep 2.5s ease-in-out infinite;
+        }
+
+        .resort-banner-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .resort-banner-arrow {
+            position: relative;
+            z-index: 1;
+            font-size: 1.4rem;
+            animation: bounceArrow 1s ease-in-out infinite;
+        }
+
+        .resort-banner-close {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: background 0.2s;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .resort-banner-close:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes bannerShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes bannerSweep {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(6px); }
+        }
+
+        .resort-banner.hidden {
+            display: none;
+        }
+        /* ===== END RESORT GUEST BANNER ===== */
+
         header {
             text-align: center;
             padding: 30px 20px 10px;
@@ -304,10 +402,22 @@
                 min-width: unset;
                 margin-bottom: 2px;
             }
+
+            .resort-banner {
+                font-size: 1rem;
+                padding: 12px 50px 12px 16px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- RESORT GUEST BANNER -->
+    <div class="resort-banner" id="resortBanner" onclick="window.open('https://sites.google.com/view/holidayinnclubcape/home/rocket-talk', '_blank')">
+        <span class="resort-banner-text">🏨 Resort Guests — Click Here for Rocket Talk Info!</span>
+        <span class="resort-banner-arrow">→</span>
+        <button class="resort-banner-close" id="resortBannerClose" title="Dismiss" onclick="event.stopPropagation(); document.getElementById('resortBanner').classList.add('hidden');">✕</button>
+    </div>
 
     <header>
         <h1>🚀 Chris The Rocket Guy</h1>
