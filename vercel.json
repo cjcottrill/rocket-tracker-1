@@ -16,6 +16,10 @@
       "dest": "/api/launches.js"
     },
     {
+      "src": "/(.+\\..+)",
+      "dest": "/public/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/index.html"
     }
