@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris The Rocket Guy • Florida Space Coast Launch Tracker</title>
+    <style>
+        :root {
+            /* Your exact colors */
+            --header-bg: #F2F1EA;
+            --background: #FFFFFF;
+            --headline: #CB7857;
+            --text: #151030;
+            --accent: #6E9FA5;
+            --fill: #6E9FA5;
+            --light-accent: #E3E8EF;
+            
+            /* Complementary modern colors I chose to work beautifully with your palette */
+            --shadow: rgba(110, 159, 165, 0.12);
+            --border-light: #E3E8EF;
+            --secondary-text: #5A5A7A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== RESORT GUEST BANNER ===== */
+        .resort-banner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, #6E9FA5 0%, #8BC1C8 50%, #6E9FA5 100%);
+            background-size: 200% 200%;
+            animation: bannerShimmer 4s ease-in-out infinite;
+            padding: 18px 24px;
+            text-align: center;
+            cursor: pointer;
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .resort-banner:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .resort-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: bannerSweep 3s linear infinite;
+        }
+
+        .resort-banner-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .resort-banner-arrow {
+            position: relative;
+            z-index: 2;
+            font-size: 1.6rem;
+            animation: bounceArrow 1.2s ease-in-out infinite;
+        }
+
+        .resort-banner-close {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: #FFFFFF;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 3;
+            transition: all 0.2s ease;
+        }
+
+        .resort-banner-close:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        @keyframes bannerShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes bannerSweep {
+            0% { left: -150%; }
+            100% { left: 150%; }
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
+        }
+
+        .resort-banner.hidden {
+            display: none;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            text-align: center;
+            padding: 40px 20px 24px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--light-accent);
+        }
+
+        header h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--headline);
+            letter-spacing: -0.04em;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            color: var(--secondary-text);
+            font-weight: 500;
+        }
+
+        /* ===== COUNTDOWN SECTION ===== */
+        .countdown-section {
+            text-align: center;
+            padding: 32px 20px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--light-accent);
+        }
+
+        .countdown-section h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .countdown-section .next-launch-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-unit {
+            background: var(--background);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 20px 24px;
+            min-width: 110px;
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+
+        .countdown-unit .number {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--headline);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .countdown-unit .label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== HERO PHOTO ===== */
+        .hero-photo {
+            text-align: center;
+            padding: 40px 20px 32px;
+            background: var(--background);
+        }
+
+        .hero-photo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px var(--shadow);
+            border: 3px solid var(--light-accent);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-photo img:hover {
+            transform: scale(1.02);
+        }
+
+        .hero-caption {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            font-style: italic;
+            margin-top: 16px;
+            margin-bottom: 20px;
+        }
+
+        .hero-photo .fb-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent);
+            color: #FFFFFF;
+            padding: 14px 28px;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 6px 16px var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        .hero-photo .fb-button:hover {
+            background: #5A8A91;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px var(--shadow);
+        }
+
+        /* ===== MAIN CONTAINER & CARDS ===== */
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        .launch-card {
+            background: var(--background);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 24px var(--shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .launch-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 32px var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .launch-card h3 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--headline);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .launch-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+
+        .launch-detail .detail-label {
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 130px;
+            flex-shrink: 0;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-go { background: #E6F4EA; color: #137333; border: 1px solid #137333; }
+        .status-tbd { background: #FEF4E6; color: #B36B00; border: 1px solid #B36B00; }
+        .status-tbc { background: #E6F0FF; color: #1A4A8C; border: 1px solid #1A4A8C; }
+        .status-hold { background: #FFEBEE; color: #C5221F; border: 1px solid #C5221F; }
+        .status-other { background: #F1F3F4; color: #3C4043; border: 1px solid #3C4043; }
+
+        /* ===== LIVESTREAM SECTION ===== */
+        .livestream-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .livestream-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .livestream-label .live-dot {
+            width: 9px;
+            height: 9px;
+            background: #EA4335;
+            border-radius: 50%;
+            animation: livePulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7); }
+            50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(234, 67, 53, 0); }
+        }
+
+        .livestream-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stream-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text);
+            background: var(--background);
+            border: 2px solid var(--accent);
+            transition: all 0.2s ease;
+        }
+
+        .stream-btn:hover {
+            transform: translateY(-2px);
+            background: var(--accent);
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .stream-btn svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .no-streams {
+            font-size: 1rem;
+            color: var(--secondary-text);
+            font-style: italic;
+            padding: 12px 0;
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin: 40px 0 60px;
+        }
+
+        .pagination button {
+            background: var(--accent);
+            color: #FFFFFF;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #5A8A91;
+            transform: translateY(-2px);
+        }
+
+        .pagination button:disabled {
+            background: #D1D5DB;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pagination span {
+            color: var(--secondary-text);
+            font-weight: 500;
+        }
+
+        /* ===== LOADING & ERROR ===== */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--secondary-text);
+            font-size: 1.25rem;
+        }
+
+        .loading .spinner {
+            border: 5px solid var(--light-accent);
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #C5221F;
+            font-size: 1.25rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 48px 20px 40px;
+            background: var(--header-bg);
+            border-top: 1px solid var(--light-accent);
+        }
+
+        footer p {
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-social {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--background);
+            border: 2px solid var(--accent);
+            padding: 12px 24px;
+            border-radius: 9999px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .footer-social a:hover {
+            background: var(--accent);
+            color: #FFFFFF;
+        }
+
+        .footer-social svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            header h1 { font-size: 2.1rem; }
+            .countdown-unit { min-width: 85px; padding: 16px 18px; }
+            .countdown-unit .number { font-size: 2.1rem; }
+            .resort-banner { font-size: 1.05rem; padding: 16px 20px; }
+            .launch-card { padding: 22px; }
+            .launch-detail { flex-direction: column; gap: 2px; }
+            .launch-detail .detail-label { min-width: unset; }
+        }
+    </style>
+</head>
+<body>
+    <!-- RESORT GUEST BANNER -->
+    <div class="resort-banner" id="resortBanner" onclick="window.open('https://sites.google.com/view/holidayinnclubcape/home/rocket-talk', '_blank')">
+        <span class="resort-banner-text">🏨 Resort Guests — Click Here for Rocket Talk Info!</span>
+        <span class="resort-banner-arrow">→</span>
+        <button class="resort-banner-close" id="resortBannerClose" title="Dismiss" onclick="event.stopPropagation(); document.getElementById('resortBanner').classList.add('hidden');">✕</button>
+    </div>
+
+    <header>
+        <h1>🚀 Chris The Rocket Guy</h1>
+        <p>Florida Space Coast Launch Tracker</p>
+    </header>
+
+    <div class="countdown-section" id="countdownSection" style="display: none;">
+        <h2>Next Launch</h2>
+        <div class="next-launch-name" id="nextLaunchName"></div>
+        <div class="countdown-timer" id="countdownTimer">
+            <div class="countdown-unit">
+                <div class="number" id="cdDays">--</div>
+                <div class="label">Days</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="number" id="cdHours">--</div>
+                <div class="label">Hours</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="number" id="cdMinutes">--</div>
+                <div class="label">Minutes</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="number" id="cdSeconds">--</div>
+                <div class="label">Seconds</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-photo">
+        <img src="/20260404_LA-05.jpg" alt="Launch photo">
+        <p class="hero-caption">Atlas V launch as seen from Daytona Beach</p>
+        <a href="https://www.facebook.com/profile.php?id=61575068029267" target="_blank" class="fb-button">
+            📘 Follow on Facebook
+        </a>
+    </div>
+
+    <div class="container">
+        <div id="launchList">
+            <div class="loading">
+                <div class="spinner"></div>
+                Loading upcoming launches...
+            </div>
+        </div>
+        <div class="pagination" id="pagination" style="display: none;">
+            <button id="prevBtn" onclick="changePage(-1)">← Previous</button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button id="nextBtn" onclick="changePage(1)">Next →</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Data provided by the <a href="https://thespacedevs.com/" target="_blank" rel="noopener noreferrer">Launch Library 2 API</a></p>
+        <p>© 2026 Chris The Rocket Guy — <a href="mailto:cjcottrill@gmail.com">Contact Me</a></p>
+        <div class="footer-social">
+            <a href="https://www.facebook.com/people/LaunchInsight/61584464880089/" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                LaunchInsight on Facebook
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        let allLaunches = [];
+        let currentPage = 0;
+        const perPage = 5;
+        let countdownInterval = null;
+
+        // SVG icons for stream buttons
+        const ICONS = {
+            youtube: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+            play: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`,
+            link: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>`
+        };
+
+        function classifyStream(url, title) {
+            const u = (url || '').toLowerCase();
+            const t = (title || '').toLowerCase();
+            if (u.includes('nasaspaceflight.com')) return { source: 'NASASpaceflight', icon: ICONS.play };
+            if (u.includes('spaceflightnow.com')) return { source: 'Spaceflight Now', icon: ICONS.play };
+            if (u.includes('youtube.com') || u.includes('youtu.be')) {
+                if (t.includes('spacex') || t.includes('starship')) return { source: 'SpaceX', icon: ICONS.youtube };
+                if (t.includes('nasa')) return { source: 'NASA', icon: ICONS.youtube };
+                return { source: 'YouTube', icon: ICONS.youtube };
+            }
+            if (u.includes('spacex.com')) return { source: 'SpaceX Webcast', icon: ICONS.play };
+            return { source: title || 'Watch Live', icon: ICONS.link };
+        }
+
+        function buildStreamHTML(vidURLs) {
+            if (!vidURLs || vidURLs.length === 0) {
+                return `
+                    <div class="livestream-section">
+                        <div class="livestream-label">📺 Livestreams</div>
+                        <div class="no-streams">No streams available yet — check back closer to launch</div>
+                    </div>
+                `;
+            }
+
+            const seen = new Set();
+            const unique = vidURLs.filter(v => {
+                if (seen.has(v.url)) return false;
+                seen.add(v.url);
+                return true;
+            });
+
+            unique.sort((a, b) => (a.priority || 99) - (b.priority || 99));
+
+            let buttons = '';
+            unique.forEach(v => {
+                const info = classifyStream(v.url, v.title);
+                const safeUrl = v.url.replace(/"/g, '&quot;');
+                const safeTitle = (v.title || info.source).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                buttons += `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="stream-btn" title="${safeTitle}">${info.icon}<span>${info.source}</span></a>`;
+            });
+
+            return `
+                <div class="livestream-section">
+                    <div class="livestream-label"><span class="live-dot"></span> Livestreams</div>
+                    <div class="livestream-links">${buttons}</div>
+                </div>
+            `;
+        }
+
+        async function fetchLaunches() {
+            try {
+                const response = await fetch('/api/launches?endpoint=launch/upcoming');
+                if (!response.ok) throw new Error('Failed to fetch launches');
+                const data = await response.json();
+                allLaunches = data.results || [];
+                
+                if (allLaunches.length > 0) {
+                    startCountdown(allLaunches[0]);
+                    renderPage();
+                    document.getElementById('pagination').style.display = 'flex';
+                } else {
+                    document.getElementById('launchList').innerHTML = '<div class="error-message">No upcoming launches found at the moment.</div>';
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('launchList').innerHTML = '<div class="error-message">Failed to load launches. Please try again later.</div>';
+            }
+        }
+
+        function renderPage() {
+            const start = currentPage * perPage;
+            const end = start + perPage;
+            const pageLaunches = allLaunches.slice(start, end);
+            const totalPages = Math.ceil(allLaunches.length / perPage);
+
+            let html = '';
+            pageLaunches.forEach(launch => {
+                const launchDate = new Date(launch.net);
+                const statusClass = getStatusClass(launch.status?.abbrev);
+                const statusName = launch.status?.name || 'Unknown';
+                const padName = launch.pad?.name || 'Unknown Pad';
+                const locationName = launch.pad?.location?.name || 'Unknown Location';
+                const missionDesc = launch.mission?.description || 'No mission description available.';
+                const missionType = launch.mission?.type || 'N/A';
+                const streamHTML = buildStreamHTML(launch.vidURLs);
+
+                html += `
+                    <div class="launch-card">
+                        <h3>${launch.name || 'Unknown Launch'}</h3>
+                        <div class="launch-detail">
+                            <span class="detail-label">Date:</span>
+                            <span>${launchDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${launchDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}</span>
+                        </div>
+                        <div class="launch-detail">
+                            <span class="detail-label">Status:</span>
+                            <span class="status-badge ${statusClass}">${statusName}</span>
+                        </div>
+                        <div class="launch-detail">
+                            <span class="detail-label">Pad:</span>
+                            <span>${padName}</span>
+                        </div>
+                        <div class="launch-detail">
+                            <span class="detail-label">Location:</span>
+                            <span>${locationName}</span>
+                        </div>
+                        <div class="launch-detail">
+                            <span class="detail-label">Mission Type:</span>
+                            <span>${missionType}</span>
+                        </div>
+                        <div class="launch-detail">
+                            <span class="detail-label">Description:</span>
+                            <span>${missionDesc}</span>
+                        </div>
+                        ${streamHTML}
+                    </div>
+                `;
+            });
+
+            document.getElementById('launchList').innerHTML = html || '<div class="error-message">No launches to display.</div>';
+            document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} of ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages - 1;
+        }
+
+        function getStatusClass(abbrev) {
+            switch (abbrev) {
+                case 'Go': return 'status-go';
+                case 'TBD': return 'status-tbd';
+                case 'TBC': return 'status-tbc';
+                case 'Hold': return 'status-hold';
+                default: return 'status-other';
+            }
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(allLaunches.length / perPage);
+            currentPage += direction;
+            if (currentPage < 0) currentPage = 0;
+            if (currentPage >= totalPages) currentPage = totalPages - 1;
+            renderPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startCountdown(launch) {
+            const section = document.getElementById('countdownSection');
+            const nameEl = document.getElementById('nextLaunchName');
+            section.style.display = 'block';
+            nameEl.textContent = launch.name || 'Unknown Launch';
+
+            const targetDate = new Date(launch.net).getTime();
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            function updateCountdown() {
+                const now = Date.now();
+                const diff = targetDate - now;
+                if (diff <= 0) {
+                    document.getElementById('cdDays').textContent = '0';
+                    document.getElementById('cdHours').textContent = '0';
+                    document.getElementById('cdMinutes').textContent = '0';
+                    document.getElementById('cdSeconds').textContent = '0';
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cdDays').textContent = days;
+                document.getElementById('cdHours').textContent = hours;
+                document.getElementById('cdMinutes').textContent = minutes;
+                document.getElementById('cdSeconds').textContent = seconds;
+            }
+
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Initial load
+        fetchLaunches();
+    </script>
+</body>
+</html>
